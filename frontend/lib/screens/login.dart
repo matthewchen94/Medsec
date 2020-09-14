@@ -75,7 +75,7 @@ class _LoginPageState extends State<LoginPage> {
     FirebaseAuth.instance
         .signInWithEmailAndPassword(email: email, password: pass)
         .then((user) async {
-      // do whatever you want to do with new user object
+      
 
       if (response.statusCode == 200) {
         jsonResponse = json.decode(response.body);
