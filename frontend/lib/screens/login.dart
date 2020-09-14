@@ -1,4 +1,7 @@
 import 'dart:convert';
+// import 'dart:html';
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:http/http.dart' as http;
@@ -9,448 +12,23 @@ import 'package:frontend/util/firebase.dart';
 
 import 'package:url_launcher/url_launcher.dart';
 
-// class LoginPage extends StatefulWidget {
-//   @override
-//   _LoginPageState createState() => _LoginPageState();
-// }
-//
-// class _LoginPageState extends State<LoginPage> {
-//
-//   bool _isLoading = false;
-//   final TextEditingController emailController = new TextEditingController();
-//   final TextEditingController passwordController = new TextEditingController();
-//   final TextEditingController resetPasswordEmailPasswordController = new TextEditingController();
-//   final TextEditingController oldPasswordController = new TextEditingController();
-//   final TextEditingController newPasswordController = new TextEditingController();
-//
-//   @override
-//   Widget build(BuildContext context) {
-//     SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle.light
-//         .copyWith(statusBarColor: Colors.transparent));
-//     return Scaffold(
-//       body: Container(
-//         decoration: BoxDecoration(
-//           gradient: LinearGradient(
-//               colors: [Colors.white, Color.fromARGB(255, 20, 54, 91)],
-//               begin: Alignment.topCenter,
-//               end: Alignment.bottomCenter),
-//         ),
-//         child: _isLoading
-//             ? Center(child: CircularProgressIndicator())
-//             : ListView(
-//           children: <Widget>[
-//             headerSection(),
-//             textSection(),
-//             buttonSection(),
-//           ],
-//         ),
-//       ),
-//     );
-//   }
-//
-//   signIn(String email, pass) async {
-//     SharedPreferences sharedPreferences = await SharedPreferences.getInstance();
-//     String url = ServerDetails.ip +
-//         ':' +
-//         ServerDetails.port +
-//         ServerDetails.api +
-//         'login';
-//     Map<String, String> headers = {"Content-type": "application/json"};
-//     var data = jsonEncode({
-//       'email': email,
-//       'password': pass,
-//       'token':
-//       FirebaseNotifications.fcmtoken
-//     });
-//     var jsonResponse = null;
-//     var response = await http.post(url, headers: headers, body: data);
-//
-//     if (response.statusCode == 200) {
-//       jsonResponse = json.decode(response.body);
-//       if (jsonResponse != null) {
-//         setState(() {
-//           _isLoading = false;
-//         });
-//         sharedPreferences.setString("token", jsonResponse['token']);
-//         sharedPreferences.setString(
-//             "token_expire_date", jsonResponse['token_expire_date']);
-//         Navigator.of(context).pushAndRemoveUntil(
-//             MaterialPageRoute(builder: (BuildContext context) => MainPage()),
-//                 (Route<dynamic> route) => false);
-//       }
-//     } else {
-//       setState(() {
-//         _isLoading = false;
-//       });
-//       print(response.headers);
-//       print(response.body);
-//     }
-//   }
-//
-//   changePassword(String email, String pass, String new_pass) async {
-//     SharedPreferences sharedPreferences = await SharedPreferences.getInstance();
-//     String url = ServerDetails.ip +
-//         ':' +
-//         ServerDetails.port +
-//         ServerDetails.api +
-//         'user/password';
-//     Map<String, String> headers = {"Content-type": "application/json"};
-//     var data = jsonEncode({
-//       'email': email,
-//       'password': pass,
-//       'new_password': new_pass
-//     });
-//     print(url);
-//     var jsonResponse = null;
-//     var response = await http.put(url, headers: headers, body: data);
-//     print(response.statusCode);
-//     if (response.statusCode == 200) {
-//       jsonResponse = json.decode(response.body);
-//       if (jsonResponse != null) {
-//         setState(() {
-//           showDialog(
-//               context: context,
-//               builder: (context) => AlertDialog(
-//                   title: Text("Message"),
-//                   content: Text(json.decode(response.body)['message'])
-//               )
-//           );
-//         });
-//         resetPasswordEmailPasswordController.clear();
-//         oldPasswordController.clear();
-//         newPasswordController.clear();
-//       }
-//     } else {
-//       setState(() {
-//         showDialog(
-//             context: context,
-//             builder: (context) => AlertDialog(
-//                 title: Text("Error message"),
-//                 content: Text(json.decode(response.body)['message'])
-//             )
-//         );
-//       });
-//       print(response.headers);
-//       print(response.body);
-//     }
-//   }
-//
-//   Column buttonSection() {
-//     return Column(children: <Widget>[
-//       Container(
-//         width: MediaQuery.of(context).size.width,
-//         height: 40.0,
-//         padding: EdgeInsets.symmetric(horizontal: 30.0),
-//         margin: EdgeInsets.only(top: 15.0),
-//         child: RaisedButton(
-//           onPressed: emailController.text == "" || passwordController.text == ""
-//               ? null
-//               : () {
-//             setState(() {
-//               _isLoading = true;
-//             });
-//             signIn(emailController.text, passwordController.text);
-//           },
-//           elevation: 0.0,
-//           color: Color.fromARGB(255, 135, 193, 218),
-//           child: Text("LOGIN", style: TextStyle(color: Colors.white70, fontSize: 17)),
-//           shape:
-//               RoundedRectangleBorder(borderRadius: BorderRadius.circular(10.0)),
-//         ),
-//       ),
-//       //Register user button
-//       Container(
-//         width: MediaQuery.of(context).size.width,
-//         height: 40.0,
-//         padding: EdgeInsets.symmetric(horizontal: 30.0),
-//         margin: EdgeInsets.only(top: 15.0),
-//         child: RaisedButton(
-//           onPressed: (){Navigator.of(context).pushNamed("/register");
-//           },
-//           elevation: 0.0,
-//           color: Color.fromARGB(255, 135, 193, 218),
-//           child: Text("REGISTER", style: TextStyle(color: Colors.white70, fontSize: 17)),
-//           shape:
-//           RoundedRectangleBorder(borderRadius: BorderRadius.circular(10.0)),
-//         ),
-//       ),
-//       Center(
-//         child: Container(
-//             margin: EdgeInsets.only(top: 10.0),
-//             padding: EdgeInsets.symmetric(horizontal: 30.0),
-//             child: Center(child: Wrap(
-//               children: <Widget>[
-//                 Text('Forget your ', style: TextStyle(color: Colors.black, fontSize: 15)),
-//                 new InkWell(
-//                   onTap: () {
-//                     createAlertDialog1(context);
-//                   },
-//                   child: new Text('Username ', style: TextStyle(color: Colors.white70, fontSize: 15)),
-//                 ),
-//                 Text('or ', style: TextStyle(color: Colors.black, fontSize: 15)),
-//                 Text('Change ', style: TextStyle(color: Colors.black, fontSize: 15)),
-//                 new InkWell(
-//                   onTap: () {
-//                     createAlertDialog2(context);
-//                   },
-//                   child: new Text('Password ', style: TextStyle(color: Colors.white70, fontSize: 15)),
-//                 ),
-//                 Text('?', style: TextStyle(color: Colors.black, fontSize: 15)),
-//               ],
-//             ),)
-//         ),
-//       )
-//     ]);
-//   }
-//
-//   Container textSection() {
-//     return Container(
-//       padding: EdgeInsets.only(left: 30.0, right: 30.0, top: 20.0, bottom: 10.0),
-//       child: Column(
-//         children: <Widget>[
-//           TextFormField(
-//             controller: emailController,
-//             cursorColor: Colors.black,
-//             style: TextStyle(color: Colors.black, fontSize: 17),
-//             decoration: InputDecoration(
-//               //icon: Icon(Icons.email, color: Colors.white70),
-//               hintText: "Email",
-//               border: OutlineInputBorder(
-//                 borderSide: BorderSide(color: Colors.black),
-//                 borderRadius: const BorderRadius.all(
-//                   const Radius.circular(13.0),
-//                 ),
-//               ),
-//               hintStyle: TextStyle(color: Colors.grey),
-//               contentPadding: const EdgeInsets.only(left: 20.0),
-//               filled: true,
-//               fillColor: const Color(0xFFddeff9),
-//             ),
-//           ),
-//           SizedBox(height: 20.0),
-//           TextFormField(
-//             controller: passwordController,
-//             cursorColor: Colors.black,
-//             obscureText: true,
-//             style: TextStyle(color: Colors.black, fontSize: 17),
-//             decoration: InputDecoration(
-//               //icon: Icon(Icons.lock, color: Colors.white70),
-//               hintText: "Password",
-//               border: OutlineInputBorder(
-//                   borderSide: BorderSide(color: Colors.black),
-//                   borderRadius: const BorderRadius.all(
-//                       const Radius.circular(13.0),
-//                   ),
-//               ),
-//               hintStyle: TextStyle(color: Colors.grey),
-//               contentPadding: const EdgeInsets.only(left: 20.0),
-//               filled: true,
-//               fillColor: const Color(0xFFddeff9),
-//             ),
-//           ),
-//         ],
-//       ),
-//     );
-//   }
-//
-//   Container headerSection() {
-//     return Container(
-//         margin: EdgeInsets.only(top: 120.0),
-//         padding: EdgeInsets.only(left: 40.0, right: 20.0),
-//         child: Container(child:  Row(
-//             mainAxisAlignment: MainAxisAlignment.center,
-//             children: <Widget>[
-//           Text("My Medical Secretary ",
-//             textAlign: TextAlign.center,
-//             style: TextStyle(
-//                 fontFamily: "Arial",
-//                 color: Colors.white70,
-//                 fontSize: 25.0,
-//                 fontWeight: FontWeight.bold
-//             ),
-//           ),
-//           Image.asset('assets/images/logo.png', scale: 2.5),
-//           //Image.file('../../assets/images/logo.jpg'),
-//         ]))
-//     );
-//   }
-//
-//   createAlertDialog1(BuildContext context) {
-//
-//     return showDialog<void>(
-//       context: context,
-//       // false = user must tap button, true = tap outside dialog
-//       builder: (BuildContext dialogContext) {
-//         return AlertDialog(
-//           title: Center(
-//             child: Text('Forget username?', style: TextStyle(color: Colors.grey, fontSize: 17)),
-//           ),
-//           content: Container(
-//               height: 40.0,
-//               padding: EdgeInsets.symmetric(horizontal: 20.0),
-//               child: Column(children: <Widget> [
-//                 Text('Please contact your clinic'),
-//                 Text('Ph: 0415181703'),
-//               ],)
-//           ),
-//           actions: <Widget>[
-//             FlatButton(
-//               child: Text('Cancel'),
-//               onPressed: () {
-//                 Navigator.of(dialogContext).pop(); // Dismiss alert dialog
-//               },
-//             ),
-//             FlatButton(
-//               child: Text('Call'),
-//               onPressed: () => launch("tel://0415181703"),
-//             ),
-//           ],
-//         );
-//       },
-//     );
-//   }
-//
-//   createAlertDialog2(BuildContext context) {
-//     return showDialog<void>(
-//       context: context,
-//       // false = user must tap button, true = tap outside dialog
-//       builder: (BuildContext dialogContext) {
-//         return AlertDialog(
-//           title: Center(
-//             child: Text('Change password?', style: TextStyle(color: Colors.grey, fontSize: 17)),
-//           ),
-//           content: Container(
-//               height: 180.0,
-//               padding: EdgeInsets.symmetric(horizontal: 10.0),
-//               child: Column(children: <Widget> [
-// //                Text('Please enter your email and'),
-// //                Text('password to reset.'),
-//                 Wrap(children: <Widget>[
-//                   Center(
-//                     child: Text('Please enter your email and')
-//                   ),
-//                   Center(
-//                       child: Text('password to reset.')
-//                   )
-//                 ],),
-//                 Container(
-//                   height: 30.0,
-//                   margin: EdgeInsets.only(top: 10.0, bottom: 0.0),
-//                   padding: EdgeInsets.only(left: 0.0),
-//                   child: TextFormField(
-//                     controller: resetPasswordEmailPasswordController,
-//                     cursorColor: Colors.black,
-//                     style: TextStyle(color: Colors.black, fontSize: 15),
-//                     decoration: InputDecoration(
-//                       //icon: Icon(Icons.email, color: Colors.white70),
-//                       hintText: "Email...",
-//                       border: OutlineInputBorder(
-//                         borderSide: BorderSide(color: Colors.black),
-//                         borderRadius: const BorderRadius.all(
-//                           const Radius.circular(5.0),
-//                         ),
-//                       ),
-//                       hintStyle: TextStyle(color: Colors.grey),
-//                       contentPadding: const EdgeInsets.only(left: 20.0),
-//                       filled: true,
-//                       fillColor: Colors.white70,
-//                     ),
-//                   ),
-//                 ),
-//                 Container(
-//                   height: 30.0,
-//                   margin: EdgeInsets.only(top: 10.0, bottom: 0.0),
-//                   padding: EdgeInsets.only(left: 0.0),
-//                   child: TextFormField(
-//                     controller: oldPasswordController,
-//                     cursorColor: Colors.black,
-//                     obscureText: true,
-//                     style: TextStyle(color: Colors.black, fontSize: 15),
-//                     decoration: InputDecoration(
-//                       //icon: Icon(Icons.email, color: Colors.white70),
-//                       hintText: "Old password...",
-//                       border: OutlineInputBorder(
-//                         borderSide: BorderSide(color: Colors.black),
-//                         borderRadius: const BorderRadius.all(
-//                           const Radius.circular(5.0),
-//                         ),
-//                       ),
-//                       hintStyle: TextStyle(color: Colors.grey),
-//                       contentPadding: const EdgeInsets.only(left: 20.0),
-//                       filled: true,
-//                       fillColor: Colors.white70,
-//                     ),
-//                   ),
-//                 ),
-//                 Container(
-//                   height: 30.0,
-//                   margin: EdgeInsets.only(top: 10.0, bottom: 0.0),
-//                   padding: EdgeInsets.only(left: 0.0),
-//                   child: TextFormField(
-//                     controller: newPasswordController,
-//                     cursorColor: Colors.black,
-//                     obscureText: true,
-//                     style: TextStyle(color: Colors.black, fontSize: 15),
-//                     decoration: InputDecoration(
-//                       //icon: Icon(Icons.email, color: Colors.white70),
-//                       hintText: "New password...",
-//                       border: OutlineInputBorder(
-//                         borderSide: BorderSide(color: Colors.black),
-//                         borderRadius: const BorderRadius.all(
-//                           const Radius.circular(5.0),
-//                         ),
-//                       ),
-//                       hintStyle: TextStyle(color: Colors.grey),
-//                       contentPadding: const EdgeInsets.only(left: 20.0),
-//                       filled: true,
-//                       fillColor: Colors.white70,
-//                     ),
-//                   ),
-//                 )
-//               ],)
-//           ),
-//           actions: <Widget>[
-//             FlatButton(
-//               child: Text('Cancel'),
-//               onPressed: () {
-//                 Navigator.of(dialogContext).pop();
-//                 resetPasswordEmailPasswordController.clear();
-//                 oldPasswordController.clear();
-//                 newPasswordController.clear();// Dismiss alert dialog
-//               },
-//             ),
-//             FlatButton(
-//               child: Text('Send'),
-//               onPressed: () {
-//                 changePassword(resetPasswordEmailPasswordController.text,
-//                     oldPasswordController.text, newPasswordController.text);
-//               },
-//             ),
-//           ],
-//         );
-//       },
-//     );
-//   }
-// }
-
-
-import 'package:url_launcher/url_launcher.dart';
-
 class LoginPage extends StatefulWidget {
   @override
   _LoginPageState createState() => _LoginPageState();
 }
 
 class _LoginPageState extends State<LoginPage> {
+  // final loginau;
+  // _LoginPageState(this.loginau);
   bool _isLoading = false;
   final TextEditingController emailController = new TextEditingController();
   final TextEditingController passwordController = new TextEditingController();
   final TextEditingController resetPasswordEmailPasswordController =
-  new TextEditingController();
+      new TextEditingController();
   final TextEditingController oldPasswordController =
-  new TextEditingController();
+      new TextEditingController();
   final TextEditingController newPasswordController =
-  new TextEditingController();
+      new TextEditingController();
 
   @override
   Widget build(BuildContext context) {
@@ -467,17 +45,18 @@ class _LoginPageState extends State<LoginPage> {
         child: _isLoading
             ? Center(child: CircularProgressIndicator())
             : ListView(
-          children: <Widget>[
-            headerSection(),
-            textSection(),
-            buttonSection(),
-          ],
-        ),
+                children: <Widget>[
+                  headerSection(),
+                  textSection(),
+                  buttonSection(),
+                ],
+              ),
       ),
     );
   }
 
   signIn(String email, pass) async {
+    int flag = 0;
     SharedPreferences sharedPreferences = await SharedPreferences.getInstance();
     String url = ServerDetails.ip +
         ':' +
@@ -493,35 +72,77 @@ class _LoginPageState extends State<LoginPage> {
     var jsonResponse = null;
     var response = await http.post(url, headers: headers, body: data);
 
-    if (response.statusCode == 200) {
-      jsonResponse = json.decode(response.body);
-      if (jsonResponse != null) {
+    FirebaseAuth.instance
+        .signInWithEmailAndPassword(email: email, password: pass)
+        .then((user) async {
+      // do whatever you want to do with new user object
+
+      if (response.statusCode == 200) {
+        jsonResponse = json.decode(response.body);
+        if (jsonResponse != null) {
+          setState(() {
+            _isLoading = false;
+          });
+          sharedPreferences.setString("token", jsonResponse['token']);
+          sharedPreferences.setString(
+              "token_expire_date", jsonResponse['token_expire_date']);
+          Navigator.of(context).pushAndRemoveUntil(
+              MaterialPageRoute(builder: (BuildContext context) => MainPage()),
+              (Route<dynamic> route) => false);
+        }
+      }
+    }).catchError((e) {
+      if (e.toString() ==
+          'PlatformException(ERROR_USER_NOT_FOUND, There is no user record corresponding to this identifier. The user may have been deleted., null)') {
         setState(() {
           _isLoading = false;
         });
-        sharedPreferences.setString("token", jsonResponse['token']);
-        sharedPreferences.setString(
-            "token_expire_date", jsonResponse['token_expire_date']);
-        Navigator.of(context).pushAndRemoveUntil(
-            MaterialPageRoute(builder: (BuildContext context) => MainPage()),
-                (Route<dynamic> route) => false);
+        print(e.details); // code, message, details
+        setState(() {
+          showDialog(
+              context: context,
+              builder: (context) => AlertDialog(
+                    title: Text("Error message"),
+                    content: Text("Sorry, you need to register firstly!"),
+                    actions: <Widget>[
+                      FlatButton(
+                          child: Text('Return'),
+                          onPressed: () => Navigator.of(context)
+                              .pushAndRemoveUntil(
+                                  MaterialPageRoute(
+                                      builder: (BuildContext context) =>
+                                          MainPage()),
+                                  (Route<dynamic> route) => false)),
+                    ],
+                  ));
+        });
+      } else if (e.toString() ==
+          'PlatformException(ERROR_WRONG_PASSWORD, The password is invalid or the user does not have a password., null)') {
+        setState(() {
+          _isLoading = false;
+        });
+        print(e.details); // code, message, details
+        setState(() {
+          showDialog(
+              context: context,
+              builder: (context) => AlertDialog(
+                    title: Text("Error message"),
+                    content: Text(
+                        "Sorry, the password is wrong! Please, try again."),
+                    actions: <Widget>[
+                      FlatButton(
+                          child: Text('Return'),
+                          onPressed: () => Navigator.of(context)
+                              .pushAndRemoveUntil(
+                                  MaterialPageRoute(
+                                      builder: (BuildContext context) =>
+                                          MainPage()),
+                                  (Route<dynamic> route) => false)),
+                    ],
+                  ));
+        });
       }
-    } else {
-      setState(() {
-        _isLoading = false;
-      });
-
-      setState(() {
-        showDialog(
-            context: context,
-            builder: (context) => AlertDialog(
-                title: Text("Error message"),
-                content: Text(
-                    "We didn't recognise the username or password you entered. Please verify.")));
-      });
-      print(response.headers);
-      print(response.body);
-    }
+    });
   }
 
   changePassword(String email, String pass, String new_pass) async {
@@ -576,17 +197,17 @@ class _LoginPageState extends State<LoginPage> {
           onPressed: emailController.text == "" || passwordController.text == ""
               ? null
               : () {
-            setState(() {
-              _isLoading = true;
-            });
-            signIn(emailController.text, passwordController.text);
-          },
+                  setState(() {
+                    _isLoading = true;
+                  });
+                  signIn(emailController.text, passwordController.text);
+                },
           elevation: 0.0,
           color: Color.fromARGB(255, 135, 193, 218),
           child: Text("LOGIN",
               style: TextStyle(color: Colors.white70, fontSize: 17)),
           shape:
-          RoundedRectangleBorder(borderRadius: BorderRadius.circular(10.0)),
+              RoundedRectangleBorder(borderRadius: BorderRadius.circular(10.0)),
         ),
       ),
       //Register user button
@@ -604,7 +225,7 @@ class _LoginPageState extends State<LoginPage> {
           child: Text("REGISTER",
               style: TextStyle(color: Colors.white70, fontSize: 17)),
           shape:
-          RoundedRectangleBorder(borderRadius: BorderRadius.circular(10.0)),
+              RoundedRectangleBorder(borderRadius: BorderRadius.circular(10.0)),
         ),
       ),
 
@@ -666,7 +287,7 @@ class _LoginPageState extends State<LoginPage> {
   Container textSection() {
     return Container(
       padding:
-      EdgeInsets.only(left: 30.0, right: 30.0, top: 20.0, bottom: 10.0),
+          EdgeInsets.only(left: 30.0, right: 30.0, top: 20.0, bottom: 10.0),
       child: Column(
         children: <Widget>[
           TextFormField(
@@ -722,18 +343,18 @@ class _LoginPageState extends State<LoginPage> {
             child: Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: <Widget>[
-                  Text(
-                    "My Medical Secretary ",
-                    textAlign: TextAlign.center,
-                    style: TextStyle(
-                        fontFamily: "Arial",
-                        color: Colors.white70,
-                        fontSize: 25.0,
-                        fontWeight: FontWeight.bold),
-                  ),
-                  Image.asset('assets/images/logo.png', scale: 2.5),
-                  //Image.file('../../assets/images/logo.jpg'),
-                ])));
+              Text(
+                "My Medical Secretary ",
+                textAlign: TextAlign.center,
+                style: TextStyle(
+                    fontFamily: "Arial",
+                    color: Colors.white70,
+                    fontSize: 25.0,
+                    fontWeight: FontWeight.bold),
+              ),
+              Image.asset('assets/images/logo.png', scale: 2.5),
+              //Image.file('../../assets/images/logo.jpg'),
+            ])));
   }
 
   createAlertDialog1(BuildContext context) {
@@ -787,8 +408,8 @@ class _LoginPageState extends State<LoginPage> {
               padding: EdgeInsets.symmetric(horizontal: 10.0),
               child: Column(
                 children: <Widget>[
-//                Text('Please enter your email and'),
-//                Text('password to reset.'),
+                  //                Text('Please enter your email and'),
+                  //                Text('password to reset.'),
                   Wrap(
                     children: <Widget>[
                       Center(child: Text('Please enter your email and')),
@@ -930,3 +551,5 @@ class _LoginPageState extends State<LoginPage> {
     );
   }
 }
+
+
