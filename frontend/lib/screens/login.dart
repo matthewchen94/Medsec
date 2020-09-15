@@ -1,7 +1,4 @@
 import 'dart:convert';
-// import 'dart:html';
-import 'package:firebase_auth/firebase_auth.dart';
-import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:http/http.dart' as http;
@@ -56,7 +53,6 @@ class _LoginPageState extends State<LoginPage> {
   }
 
   signIn(String email, pass) async {
-    int flag = 0;
     SharedPreferences sharedPreferences = await SharedPreferences.getInstance();
     String url = ServerDetails.ip +
         ':' +
@@ -72,77 +68,35 @@ class _LoginPageState extends State<LoginPage> {
     var jsonResponse = null;
     var response = await http.post(url, headers: headers, body: data);
 
-    FirebaseAuth.instance
-        .signInWithEmailAndPassword(email: email, password: pass)
-        .then((user) async {
-      
+    if (response.statusCode == 200) {
+      jsonResponse = json.decode(response.body);
+      if (jsonResponse != null) {
+        setState(() {
+          _isLoading = false;
+        });
+        sharedPreferences.setString("token", jsonResponse['token']);
+        sharedPreferences.setString(
+            "token_expire_date", jsonResponse['token_expire_date']);
+        Navigator.of(context).pushAndRemoveUntil(
+            MaterialPageRoute(builder: (BuildContext context) => MainPage()),
+            (Route<dynamic> route) => false);
+      }
+    } else {
+      setState(() {
+        _isLoading = false;
+      });
 
-      if (response.statusCode == 200) {
-        jsonResponse = json.decode(response.body);
-        if (jsonResponse != null) {
-          setState(() {
-            _isLoading = false;
-          });
-          sharedPreferences.setString("token", jsonResponse['token']);
-          sharedPreferences.setString(
-              "token_expire_date", jsonResponse['token_expire_date']);
-          Navigator.of(context).pushAndRemoveUntil(
-              MaterialPageRoute(builder: (BuildContext context) => MainPage()),
-              (Route<dynamic> route) => false);
-        }
-      }
-    }).catchError((e) {
-      if (e.toString() ==
-          'PlatformException(ERROR_USER_NOT_FOUND, There is no user record corresponding to this identifier. The user may have been deleted., null)') {
-        setState(() {
-          _isLoading = false;
-        });
-        print(e.details); // code, message, details
-        setState(() {
-          showDialog(
-              context: context,
-              builder: (context) => AlertDialog(
-                    title: Text("Error message"),
-                    content: Text("Sorry, you need to register firstly!"),
-                    actions: <Widget>[
-                      FlatButton(
-                          child: Text('Return'),
-                          onPressed: () => Navigator.of(context)
-                              .pushAndRemoveUntil(
-                                  MaterialPageRoute(
-                                      builder: (BuildContext context) =>
-                                          MainPage()),
-                                  (Route<dynamic> route) => false)),
-                    ],
-                  ));
-        });
-      } else if (e.toString() ==
-          'PlatformException(ERROR_WRONG_PASSWORD, The password is invalid or the user does not have a password., null)') {
-        setState(() {
-          _isLoading = false;
-        });
-        print(e.details); // code, message, details
-        setState(() {
-          showDialog(
-              context: context,
-              builder: (context) => AlertDialog(
-                    title: Text("Error message"),
-                    content: Text(
-                        "Sorry, the password is wrong! Please, try again."),
-                    actions: <Widget>[
-                      FlatButton(
-                          child: Text('Return'),
-                          onPressed: () => Navigator.of(context)
-                              .pushAndRemoveUntil(
-                                  MaterialPageRoute(
-                                      builder: (BuildContext context) =>
-                                          MainPage()),
-                                  (Route<dynamic> route) => false)),
-                    ],
-                  ));
-        });
-      }
-    });
+      setState(() {
+        showDialog(
+            context: context,
+            builder: (context) => AlertDialog(
+                title: Text("Error message"),
+                content: Text(
+                    "We didn't recognise the username or password you entered. Please verify.")));
+      });
+      print(response.headers);
+      print(response.body);
+    }
   }
 
   changePassword(String email, String pass, String new_pass) async {
@@ -408,8 +362,8 @@ class _LoginPageState extends State<LoginPage> {
               padding: EdgeInsets.symmetric(horizontal: 10.0),
               child: Column(
                 children: <Widget>[
-                  //                Text('Please enter your email and'),
-                  //                Text('password to reset.'),
+//                Text('Please enter your email and'),
+//                Text('password to reset.'),
                   Wrap(
                     children: <Widget>[
                       Center(child: Text('Please enter your email and')),
