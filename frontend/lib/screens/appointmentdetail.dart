@@ -120,6 +120,8 @@ class _AppointmentDetailState extends State<AppointmentDetail>
                 "\n" +
                 "\n" +
                 "\n" +
+                "Location: " +
+                "66 Darebin St, Heidelberg VIC 3084" +
                 "From Medical Secretary App";
           });
         }
@@ -251,7 +253,8 @@ class _AppointmentDetailState extends State<AppointmentDetail>
             leading: BackButton(color: Colors.black),
             centerTitle: true,
             title: Text("Appointment Details",
-                style: TextStyle(color: Colors.black)),
+                style: TextStyle(
+                    color: Colors.black, fontWeight: FontWeight.w700)),
             backgroundColor: Colors.white,
             brightness: Brightness.light,
             elevation: 0.5,
@@ -291,10 +294,11 @@ class _AppointmentDetailState extends State<AppointmentDetail>
             children: <Widget>[
               Text("Appts:",
                   style: TextStyle(
-                      fontSize: 25.0,
+                      fontSize: 20.0,
                       fontFamily: "Arial",
                       color: Colors.black,
-                      height: 1.5),
+                      height: 1.5,
+                      fontWeight: FontWeight.w700),
                   textAlign: TextAlign.left,
                   overflow: TextOverflow.ellipsis),
             ],
@@ -308,10 +312,12 @@ class _AppointmentDetailState extends State<AppointmentDetail>
                     Text(
                       _appointmentState.title.toString(),
                       style: TextStyle(
-                          fontSize: 25.0,
-                          fontFamily: "Arial",
-                          color: Colors.black,
-                          height: 1.5),
+                        fontSize: 20.0,
+                        fontFamily: "Arial",
+                        color: Color.fromARGB(155, 155, 155, 155),
+                        height: 1.5,
+                        // backgroundColor: Colors.blue,
+                      ),
                       textAlign: TextAlign.left,
                     ),
                   ],
@@ -326,7 +332,7 @@ class _AppointmentDetailState extends State<AppointmentDetail>
                       style: TextStyle(
                           fontSize: 25.0,
                           fontFamily: "Arial",
-                          color: Colors.black,
+                          color: Color.fromARGB(155, 155, 155, 155),
                           height: 1.5),
                       textAlign: TextAlign.left,
                     ),
@@ -341,7 +347,8 @@ class _AppointmentDetailState extends State<AppointmentDetail>
                       fontSize: 20.0,
                       fontFamily: "Arial",
                       color: Colors.black,
-                      height: 1.5),
+                      height: 1.5,
+                      fontWeight: FontWeight.w700),
                   textAlign: TextAlign.left,
                   overflow: TextOverflow.ellipsis),
             ],
@@ -357,7 +364,7 @@ class _AppointmentDetailState extends State<AppointmentDetail>
                       style: TextStyle(
                           fontSize: 20.0,
                           fontFamily: "Arial",
-                          color: Colors.grey,
+                          color: Color.fromARGB(155, 155, 155, 155),
                           height: 1.5),
                       textAlign: TextAlign.left,
                     ),
@@ -373,7 +380,7 @@ class _AppointmentDetailState extends State<AppointmentDetail>
                       style: TextStyle(
                           fontSize: 20.0,
                           fontFamily: "Arial",
-                          color: Colors.grey,
+                          color: Color.fromARGB(155, 155, 155, 155),
                           height: 1.5),
                       textAlign: TextAlign.left,
                     ),
@@ -388,7 +395,8 @@ class _AppointmentDetailState extends State<AppointmentDetail>
                       fontSize: 20.0,
                       fontFamily: "Arial",
                       color: Colors.black,
-                      height: 1.5),
+                      height: 1.5,
+                      fontWeight: FontWeight.w700),
                   textAlign: TextAlign.left,
                   overflow: TextOverflow.ellipsis),
             ],
@@ -415,7 +423,7 @@ class _AppointmentDetailState extends State<AppointmentDetail>
                       style: TextStyle(
                           fontSize: 20.0,
                           fontFamily: "Arial",
-                          color: Colors.grey,
+                          color: Color.fromARGB(155, 155, 155, 155),
                           height: 1.5),
                       textAlign: TextAlign.left,
                     ),
@@ -431,7 +439,7 @@ class _AppointmentDetailState extends State<AppointmentDetail>
                       style: TextStyle(
                           fontSize: 20.0,
                           fontFamily: "Arial",
-                          color: Colors.grey,
+                          color: Color.fromARGB(155, 155, 155, 155),
                           height: 1.5),
                       textAlign: TextAlign.left,
                     ),
@@ -446,7 +454,8 @@ class _AppointmentDetailState extends State<AppointmentDetail>
                       fontSize: 20.0,
                       fontFamily: "Arial",
                       color: Colors.black,
-                      height: 1.5),
+                      height: 1.5,
+                      fontWeight: FontWeight.w700),
                   textAlign: TextAlign.left,
                   overflow: TextOverflow.ellipsis),
             ],
@@ -462,7 +471,7 @@ class _AppointmentDetailState extends State<AppointmentDetail>
                       style: TextStyle(
                           fontSize: 20.0,
                           fontFamily: "Arial",
-                          color: Colors.grey,
+                          color: Color.fromARGB(155, 155, 155, 155),
                           height: 1.5),
                       textAlign: TextAlign.left,
                     ),
@@ -478,7 +487,7 @@ class _AppointmentDetailState extends State<AppointmentDetail>
                       style: TextStyle(
                           fontSize: 20.0,
                           fontFamily: "Arial",
-                          color: Colors.grey,
+                          color: Color.fromARGB(155, 155, 155, 155),
                           height: 1.5),
                       textAlign: TextAlign.left,
                     ),
@@ -493,7 +502,8 @@ class _AppointmentDetailState extends State<AppointmentDetail>
                       fontSize: 20.0,
                       fontFamily: "Arial",
                       color: Colors.black,
-                      height: 1.5),
+                      height: 1.5,
+                      fontWeight: FontWeight.w700),
                   textAlign: TextAlign.left,
                   overflow: TextOverflow.ellipsis),
             ],
@@ -504,11 +514,11 @@ class _AppointmentDetailState extends State<AppointmentDetail>
             alignment: WrapAlignment.start,
             children: <Widget>[
               Text(
-                "Not available",
+                "66 Darebin St, Heidelberg VIC 3084",
                 style: TextStyle(
                     fontSize: 20.0,
                     fontFamily: "Arial",
-                    color: Colors.grey,
+                    color: Color.fromARGB(155, 155, 155, 155),
                     height: 1.5),
                 textAlign: TextAlign.left,
               ),
@@ -525,7 +535,8 @@ class _AppointmentDetailState extends State<AppointmentDetail>
                     fontSize: 20.0,
                     fontFamily: "Arial",
                     color: Colors.black,
-                    height: 1.5),
+                    height: 1.5,
+                    fontWeight: FontWeight.w700),
               ),
             ],
           ),
@@ -542,7 +553,7 @@ class _AppointmentDetailState extends State<AppointmentDetail>
                               fontSize: 20.0,
                               fontFamily: "Arial",
                               decoration: TextDecoration.underline,
-                              color: Colors.grey,
+                              color: Color.fromARGB(155, 155, 155, 155),
                               height: 1.5),
                         ),
                         onTap: () {
@@ -558,7 +569,7 @@ class _AppointmentDetailState extends State<AppointmentDetail>
                         style: TextStyle(
                             fontSize: 20.0,
                             fontFamily: "Arial",
-                            color: Colors.grey,
+                            color: Color.fromARGB(155, 155, 155, 155),
                             height: 1.5),
                       ),
               ),
@@ -575,7 +586,8 @@ class _AppointmentDetailState extends State<AppointmentDetail>
                     fontSize: 20.0,
                     fontFamily: "Arial",
                     color: Colors.black,
-                    height: 1.5),
+                    height: 1.5,
+                    fontWeight: FontWeight.w700),
               ),
             ],
           ),
@@ -608,7 +620,7 @@ class _AppointmentDetailState extends State<AppointmentDetail>
                                   style: TextStyle(
                                       fontSize: 20.0,
                                       fontFamily: "Arial",
-                                      color: Colors.black,
+                                      color: Color.fromARGB(155, 155, 155, 155),
                                       height: 1.5)),
                               Row(
                                 mainAxisAlignment:
@@ -664,7 +676,8 @@ class _AppointmentDetailState extends State<AppointmentDetail>
                       fontSize: 20.0,
                       fontFamily: "Arial",
                       color: Colors.black,
-                      height: 1.5),
+                      height: 1.5,
+                      fontWeight: FontWeight.w700),
                   textAlign: TextAlign.left,
                   overflow: TextOverflow.ellipsis),
             ],
@@ -683,7 +696,7 @@ class _AppointmentDetailState extends State<AppointmentDetail>
                                 style: TextStyle(
                                     fontSize: 20.0,
                                     fontFamily: "Arial",
-                                    color: Colors.grey,
+                                    color: Color.fromARGB(155, 155, 155, 155),
                                     height: 1.5),
                                 textAlign: TextAlign.left,
                               )
@@ -698,7 +711,8 @@ class _AppointmentDetailState extends State<AppointmentDetail>
                                         style: TextStyle(
                                             fontSize: 20.0,
                                             fontFamily: "Arial",
-                                            color: Colors.grey,
+                                            color: Color.fromARGB(
+                                                155, 155, 155, 155),
                                             height: 1.5),
                                         textAlign: TextAlign.left,
                                       )),
@@ -721,7 +735,7 @@ class _AppointmentDetailState extends State<AppointmentDetail>
                       style: TextStyle(
                           fontSize: 20.0,
                           fontFamily: "Arial",
-                          color: Colors.grey,
+                          color: Color.fromARGB(155, 155, 155, 155),
                           height: 1.5),
                       textAlign: TextAlign.left,
                     ),
