@@ -297,7 +297,7 @@ class _LoginPageState extends State<LoginPage> {
             child: Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: <Widget>[
-              Text(
+              Expanded(child:Text(
                 "My Medical Secretary ",
                 textAlign: TextAlign.center,
                 style: TextStyle(
@@ -305,7 +305,7 @@ class _LoginPageState extends State<LoginPage> {
                     color: Colors.white70,
                     fontSize: 25.0,
                     fontWeight: FontWeight.bold),
-              ),
+              )),
               Image.asset('assets/images/logo.png', scale: 2.5),
               //Image.file('../../assets/images/logo.jpg'),
             ])));
