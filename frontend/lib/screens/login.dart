@@ -129,12 +129,26 @@ class _LoginPageState extends State<LoginPage> {
     if (response.statusCode == 200) {
       jsonResponse = json.decode(response.body);
       if (jsonResponse != null) {
+        Widget okButton = FlatButton(
+            child: Text("OK"),
+            onPressed: () {
+              Navigator.push(
+                  context, MaterialPageRoute(builder: (context) => MainPage()));
+            });
         setState(() {
+          AlertDialog alert = AlertDialog(
+            title: Text("Notification"),
+            content: Text("Password changed successfully"),
+            actions: [
+              okButton,
+            ],
+          );
           showDialog(
-              context: context,
-              builder: (context) => AlertDialog(
-                  title: Text("Message"),
-                  content: Text(json.decode(response.body)['message'])));
+            context: context,
+            builder: (BuildContext context) {
+              return alert;
+            },
+          );
         });
         resetPasswordEmailPasswordController.clear();
         oldPasswordController.clear();
