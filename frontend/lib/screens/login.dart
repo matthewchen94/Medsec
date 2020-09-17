@@ -92,7 +92,7 @@ class _LoginPageState extends State<LoginPage> {
             builder: (context) => AlertDialog(
                 title: Text("Error message"),
                 content: Text(
-                    "We didn't recognise the username or password you entered. Please verify.")));
+                    "Oops! The password is wrong or the email is invalid.")));
       });
       print(response.headers);
       print(response.body);
