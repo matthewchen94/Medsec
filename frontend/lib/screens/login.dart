@@ -49,6 +49,7 @@ class _LoginPageState extends State<LoginPage> {
                 ],
               ),
       ),
+      resizeToAvoidBottomPadding: false,
     );
   }
 
@@ -297,7 +298,8 @@ class _LoginPageState extends State<LoginPage> {
             child: Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: <Widget>[
-              Expanded(child:Text(
+              Expanded(
+                  child: Text(
                 "My Medical Secretary ",
                 textAlign: TextAlign.center,
                 style: TextStyle(
@@ -357,95 +359,95 @@ class _LoginPageState extends State<LoginPage> {
             child: Text('Change password?',
                 style: TextStyle(color: Colors.grey, fontSize: 17)),
           ),
-          content: Container(
-              height: 180.0,
-              padding: EdgeInsets.symmetric(horizontal: 10.0),
-              child: Column(
-                children: <Widget>[
+          content: SingleChildScrollView(
+              //height: 180.0,
+              //padding: EdgeInsets.symmetric(horizontal: 10.0),
+              child: new Column(
+            children: <Widget>[
 //                Text('Please enter your email and'),
 //                Text('password to reset.'),
-                  Wrap(
-                    children: <Widget>[
-                      Center(child: Text('Please enter your email and')),
-                      Center(child: Text('password to reset.'))
-                    ],
-                  ),
-                  Container(
-                    height: 30.0,
-                    margin: EdgeInsets.only(top: 10.0, bottom: 0.0),
-                    padding: EdgeInsets.only(left: 0.0),
-                    child: TextFormField(
-                      controller: resetPasswordEmailPasswordController,
-                      cursorColor: Colors.black,
-                      style: TextStyle(color: Colors.black, fontSize: 15),
-                      decoration: InputDecoration(
-                        //icon: Icon(Icons.email, color: Colors.white70),
-                        hintText: "Email...",
-                        border: OutlineInputBorder(
-                          borderSide: BorderSide(color: Colors.black),
-                          borderRadius: const BorderRadius.all(
-                            const Radius.circular(5.0),
-                          ),
-                        ),
-                        hintStyle: TextStyle(color: Colors.grey),
-                        contentPadding: const EdgeInsets.only(left: 20.0),
-                        filled: true,
-                        fillColor: Colors.white70,
-                      ),
-                    ),
-                  ),
-                  Container(
-                    height: 30.0,
-                    margin: EdgeInsets.only(top: 10.0, bottom: 0.0),
-                    padding: EdgeInsets.only(left: 0.0),
-                    child: TextFormField(
-                      controller: oldPasswordController,
-                      cursorColor: Colors.black,
-                      obscureText: true,
-                      style: TextStyle(color: Colors.black, fontSize: 15),
-                      decoration: InputDecoration(
-                        //icon: Icon(Icons.email, color: Colors.white70),
-                        hintText: "Old password...",
-                        border: OutlineInputBorder(
-                          borderSide: BorderSide(color: Colors.black),
-                          borderRadius: const BorderRadius.all(
-                            const Radius.circular(5.0),
-                          ),
-                        ),
-                        hintStyle: TextStyle(color: Colors.grey),
-                        contentPadding: const EdgeInsets.only(left: 20.0),
-                        filled: true,
-                        fillColor: Colors.white70,
-                      ),
-                    ),
-                  ),
-                  Container(
-                    height: 30.0,
-                    margin: EdgeInsets.only(top: 10.0, bottom: 0.0),
-                    padding: EdgeInsets.only(left: 0.0),
-                    child: TextFormField(
-                      controller: newPasswordController,
-                      cursorColor: Colors.black,
-                      obscureText: true,
-                      style: TextStyle(color: Colors.black, fontSize: 15),
-                      decoration: InputDecoration(
-                        //icon: Icon(Icons.email, color: Colors.white70),
-                        hintText: "New password...",
-                        border: OutlineInputBorder(
-                          borderSide: BorderSide(color: Colors.black),
-                          borderRadius: const BorderRadius.all(
-                            const Radius.circular(5.0),
-                          ),
-                        ),
-                        hintStyle: TextStyle(color: Colors.grey),
-                        contentPadding: const EdgeInsets.only(left: 20.0),
-                        filled: true,
-                        fillColor: Colors.white70,
-                      ),
-                    ),
-                  )
+              Wrap(
+                children: <Widget>[
+                  Center(child: Text('Please enter your email and')),
+                  Center(child: Text('password to reset.'))
                 ],
-              )),
+              ),
+              Container(
+                height: 30.0,
+                margin: EdgeInsets.only(top: 10.0, bottom: 0.0),
+                padding: EdgeInsets.only(left: 0.0),
+                child: TextFormField(
+                  controller: resetPasswordEmailPasswordController,
+                  cursorColor: Colors.black,
+                  style: TextStyle(color: Colors.black, fontSize: 15),
+                  decoration: InputDecoration(
+                    //icon: Icon(Icons.email, color: Colors.white70),
+                    hintText: "Email...",
+                    border: OutlineInputBorder(
+                      borderSide: BorderSide(color: Colors.black),
+                      borderRadius: const BorderRadius.all(
+                        const Radius.circular(5.0),
+                      ),
+                    ),
+                    hintStyle: TextStyle(color: Colors.grey),
+                    contentPadding: const EdgeInsets.only(left: 20.0),
+                    filled: true,
+                    fillColor: Colors.white70,
+                  ),
+                ),
+              ),
+              Container(
+                height: 30.0,
+                margin: EdgeInsets.only(top: 10.0, bottom: 0.0),
+                padding: EdgeInsets.only(left: 0.0),
+                child: TextFormField(
+                  controller: oldPasswordController,
+                  cursorColor: Colors.black,
+                  obscureText: true,
+                  style: TextStyle(color: Colors.black, fontSize: 15),
+                  decoration: InputDecoration(
+                    //icon: Icon(Icons.email, color: Colors.white70),
+                    hintText: "Old password...",
+                    border: OutlineInputBorder(
+                      borderSide: BorderSide(color: Colors.black),
+                      borderRadius: const BorderRadius.all(
+                        const Radius.circular(5.0),
+                      ),
+                    ),
+                    hintStyle: TextStyle(color: Colors.grey),
+                    contentPadding: const EdgeInsets.only(left: 20.0),
+                    filled: true,
+                    fillColor: Colors.white70,
+                  ),
+                ),
+              ),
+              Container(
+                height: 30.0,
+                margin: EdgeInsets.only(top: 10.0, bottom: 0.0),
+                padding: EdgeInsets.only(left: 0.0),
+                child: TextFormField(
+                  controller: newPasswordController,
+                  cursorColor: Colors.black,
+                  obscureText: true,
+                  style: TextStyle(color: Colors.black, fontSize: 15),
+                  decoration: InputDecoration(
+                    //icon: Icon(Icons.email, color: Colors.white70),
+                    hintText: "New password...",
+                    border: OutlineInputBorder(
+                      borderSide: BorderSide(color: Colors.black),
+                      borderRadius: const BorderRadius.all(
+                        const Radius.circular(5.0),
+                      ),
+                    ),
+                    hintStyle: TextStyle(color: Colors.grey),
+                    contentPadding: const EdgeInsets.only(left: 20.0),
+                    filled: true,
+                    fillColor: Colors.white70,
+                  ),
+                ),
+              )
+            ],
+          )),
           actions: <Widget>[
             FlatButton(
               child: Text('Cancel'),
