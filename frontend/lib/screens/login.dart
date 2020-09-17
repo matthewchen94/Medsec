@@ -302,7 +302,7 @@ class _LoginPageState extends State<LoginPage> {
                 textAlign: TextAlign.center,
                 style: TextStyle(
                     fontFamily: "Arial",
-                    color: Colors.white70,
+                    color: Colors.blueGrey,
                     fontSize: 25.0,
                     fontWeight: FontWeight.bold),
               )),
