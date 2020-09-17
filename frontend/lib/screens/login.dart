@@ -86,14 +86,26 @@ class _LoginPageState extends State<LoginPage> {
       setState(() {
         _isLoading = false;
       });
-
+      Widget okButton = FlatButton(
+          child: Text("OK"),
+          onPressed: () {
+            Navigator.push(
+                context, MaterialPageRoute(builder: (context) => MainPage()));
+          });
       setState(() {
+        AlertDialog alert = AlertDialog(
+          title: Text("Error message"),
+          content: Text("Oops! The password is wrong or the email is invalid."),
+          actions: [
+            okButton,
+          ],
+        );
         showDialog(
-            context: context,
-            builder: (context) => AlertDialog(
-                title: Text("Error message"),
-                content: Text(
-                    "Oops! The password is wrong or the email is invalid.")));
+          context: context,
+          builder: (BuildContext context) {
+            return alert;
+          },
+        );
       });
       print(response.headers);
       print(response.body);
@@ -133,17 +145,20 @@ class _LoginPageState extends State<LoginPage> {
         showDialog(
             context: context,
             builder: (context) => AlertDialog(
-                title: Text("Error message"),
-                content: Text("Oops! The password is wrong or the email is invalid."),
-                actions: <Widget>[
-                  FlatButton(
-                       child: Text('Ok'),
-                       onPressed: () => Navigator.of(context).pushAndRemoveUntil(
-                           MaterialPageRoute(builder: (BuildContext context) => MainPage()),
-                                (Route<dynamic> route) => false)
-                  ),
-                ],
-        ));
+                  title: Text("Error message"),
+                  content: Text(
+                      "Oops! The password is wrong or the email is invalid."),
+                  actions: <Widget>[
+                    FlatButton(
+                        child: Text('Ok'),
+                        onPressed: () => Navigator.of(context)
+                            .pushAndRemoveUntil(
+                                MaterialPageRoute(
+                                    builder: (BuildContext context) =>
+                                        MainPage()),
+                                (Route<dynamic> route) => false)),
+                  ],
+                ));
       });
       print(response.headers);
       print(response.body);
