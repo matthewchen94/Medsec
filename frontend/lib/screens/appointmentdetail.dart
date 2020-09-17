@@ -101,6 +101,7 @@ class _AppointmentDetailState extends State<AppointmentDetail>
                     ? _appointmentState.title
                     : "Not available") +
                 "\n" +
+                "\n" +
                 "Day/Time: " +
                 ((_appointmentState.date != null) &&
                         (_appointmentState.duration != null)
@@ -118,10 +119,10 @@ class _AppointmentDetailState extends State<AppointmentDetail>
                     : "Not available") +
                 "\n" +
                 "\n" +
-                "\n" +
-                "\n" +
                 "Location: " +
                 "66 Darebin St, Heidelberg VIC 3084" +
+                "\n" +
+                "\n" +
                 "From Medical Secretary App";
           });
         }
