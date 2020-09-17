@@ -134,7 +134,16 @@ class _LoginPageState extends State<LoginPage> {
             context: context,
             builder: (context) => AlertDialog(
                 title: Text("Error message"),
-                content: Text("Oops! The password is wrong or the email is invalid.")));
+                content: Text("Oops! The password is wrong or the email is invalid."),
+                actions: <Widget>[
+                  FlatButton(
+                       child: Text('Ok'),
+                       onPressed: () => Navigator.of(context).pushAndRemoveUntil(
+                           MaterialPageRoute(builder: (BuildContext context) => MainPage()),
+                                (Route<dynamic> route) => false)
+                  ),
+                ],
+        ));
       });
       print(response.headers);
       print(response.body);
