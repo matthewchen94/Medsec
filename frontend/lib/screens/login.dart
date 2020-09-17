@@ -134,7 +134,7 @@ class _LoginPageState extends State<LoginPage> {
             context: context,
             builder: (context) => AlertDialog(
                 title: Text("Error message"),
-                content: Text(json.decode(response.body)['message'])));
+                content: Text("Oops! The password is wrong or the email is invalid.")));
       });
       print(response.headers);
       print(response.body);
