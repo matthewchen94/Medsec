@@ -147,7 +147,8 @@ In order to deploy the app, configure your router settings such that the server 
 
 Edit the ```~/{projectname}/frontend/lib/util/serverDetails.dart``` file to reflect your public ip address.  
 
-After deploye the backend on your own computer, you may want to deploy it on the AWS EC2 just like we did. For more information about AWS EC2 deployment, please see: https://confluence.cis.unimelb.edu.au:8443/display/COMP900822020SM2MSWombat/AWS++Deployment
+After deploye the backend on your own computer, you may want to deploy it on the AWS EC2 just like we did. For more information about AWS EC2 deployment, please see: 
+[AWS Deployment](https://confluence.cis.unimelb.edu.au:8443/display/COMP900822020SM2MSWombat/AWS++Deployment)
 
 ## API
 
