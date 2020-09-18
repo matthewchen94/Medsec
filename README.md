@@ -147,7 +147,7 @@ In order to deploy the app, configure your router settings such that the server 
 
 Edit the ```~/{projectname}/frontend/lib/util/serverDetails.dart``` file to reflect your public ip address.  
 
-After deploye the backend on your own computer, you may want to deploy it on the AWS EC2 just like we did. For more information about AWS EC2 deployment, please see: （https://confluence.cis.unimelb.edu.au:8443/display/COMP900822020SM2MSWombat/AWS++Deployment)
+After deploye the backend on your own computer, you may want to deploy it on the AWS EC2 just like we did. For more information about AWS EC2 deployment, please see: https://confluence.cis.unimelb.edu.au:8443/display/COMP900822020SM2MSWombat/AWS++Deployment
 
 ## API
 
@@ -196,7 +196,7 @@ The new changes are mainly in the these files：google-services.jason, login.dar
 
 ## Authors
 
-From the previous group：Wenkai Huang - wenkai.huang@hotmail.com  Callum Dowling - callum.dowling@gmail.com
+From the previous group: Wenkai Huang - wenkai.huang@hotmail.com  Callum Dowling - callum.dowling@gmail.com
                          
 From the group Wombat: Lin Luo - linluo@student.unimelb.edu.au
 
