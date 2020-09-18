@@ -1,5 +1,5 @@
 
-# Medical Secretary App - COMP90082 2020 S2 Team Wombat
+#My Medical Secretary- Team Wombat (COMP90082 2020 S2)
 
 This repository contains several components: api, backend, frontend, genie_script, docs and files. Some of them comes from previous teams, and our team has added more functions. During sprint1, we made some significant modifications mainly in both frontend and solved bugs to make the whole front application work smoothly and meet the client's expectation.  For back end, at this stage, we mainly focus on the datebase deployment using ASW EC2.
 
