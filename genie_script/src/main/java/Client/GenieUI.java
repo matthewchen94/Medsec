@@ -20,7 +20,8 @@ import java.security.KeyStore;
 public class GenieUI {
     private static int PORT = 11111;
     private static String IP = "13.58.243.191";
-    public static String FileMonitorPATH="D:\\1_test"; //update 20/09/2020
+    public static String FileMonitorPATH="D:\\1_test";
+    public static boolean monitorThread = false;//update 20/09/2020
     private static long prevTime;
     // 30 mins delay for update
     private static long DELAY_UPDATE = 12 * 60 * 60 * 1000;
@@ -100,10 +101,19 @@ public class GenieUI {
         updateMonitorButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                FileMonitorPATH = monitorPath.getText();
-                System.out.println("Location of files from GENIE has been set to : " + FileMonitorPATH);
-                FileMonitor monitor = new FileMonitor();
-                monitor.MonitorStart(FileMonitorPATH);
+                if (GenieUI.monitorThread == false){
+                    GenieUI.monitorThread = true;
+                    FileMonitorPATH = monitorPath.getText();
+                    System.out.println("Location of files from GENIE has been set to : " + FileMonitorPATH);
+                    FileMonitor monitor = new FileMonitor();
+                    monitor.MonitorStart(FileMonitorPATH);
+                }else{
+                    JPanel monitorPanel = new JPanel();
+                    JOptionPane.showMessageDialog(monitorPanel,
+                            "Please close this application and open a new one to reset the file location!",
+                            "Warn", JOptionPane.WARNING_MESSAGE);
+                }
+
             }
         });
         // Update Patient File Path button
