@@ -19,7 +19,7 @@ import java.security.KeyStore;
 
 public class GenieUI {
     private static int PORT = 11111;
-    private static String IP = "localhost";
+    private static String IP = "13.58.243.191";
     private static String FileMonitorPATH="D:\\1_test"; //update 20/09/2020
     private static long prevTime;
     // 30 mins delay for update
