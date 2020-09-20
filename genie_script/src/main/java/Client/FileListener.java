@@ -24,10 +24,8 @@ public class FileListener extends FileAlterationListenerAdaptor {
                         || (type!=QueryCommand.FILE && fileExtention.equals("xls")))
                 {
                     GenieUI.COMMAND = type;
-                    //pathTextArea.setText(file.getAbsolutePath());
                     GenieUI.FILE_EXTENSION = fileExtention;
-                    //String content = IpaService.getIpaInfoMap(file.toString());
-                    //consoleTextArea.setText("abcabc");
+                    System.out.println("The Content of File "+filepath+" Change!");
                 }
                 else{
                     JPanel panel1 = new JPanel();
@@ -37,7 +35,6 @@ public class FileListener extends FileAlterationListenerAdaptor {
                                     "or with '.pdf' extension named with 'File' for uploading reports to users.",
                             "Warn", JOptionPane.WARNING_MESSAGE);
                     GenieUI.COMMAND = null;
-                    //pathTextArea.setText("");
                     GenieUI.FILE_EXTENSION = null;
                     System.out.println("Upload Failed");
                 }
@@ -74,7 +71,6 @@ public class FileListener extends FileAlterationListenerAdaptor {
                         "Warn", JOptionPane.WARNING_MESSAGE);
                 System.out.println("Please upload the correct file!");
             }
-            System.out.println("The Content of File "+filepath+" Change!");
         }
 
         @Override
@@ -91,7 +87,6 @@ public class FileListener extends FileAlterationListenerAdaptor {
                         || (type!=QueryCommand.FILE && fileExtention.equals("xls")))
                 {
                     GenieUI.COMMAND = type;
-                    //pathTextArea.setText(file.getAbsolutePath());
                     GenieUI.FILE_EXTENSION = fileExtention;
                     System.out.println("New File " + filepath + "has been synchronized!");
                 }
@@ -116,7 +111,6 @@ public class FileListener extends FileAlterationListenerAdaptor {
                                 "'Appointment', 'Patient', 'Doctor', 'Hospital', 'Pathology', 'Radiology','Resource', or 'File'",
                         "Warn", JOptionPane.WARNING_MESSAGE);
                 GenieUI.COMMAND = null;
-                //pathTextArea.setText("");
                 GenieUI.FILE_EXTENSION = null;
                 System.out.println("Upload Failed");
             }
@@ -125,7 +119,6 @@ public class FileListener extends FileAlterationListenerAdaptor {
                 System.out.println("Send Update");
                 try {
                     Socket clientSocket = GenieUI.initSSLSocket();
-//                    Socket clientSocket = new Socket(IP, PORT);
                     TCPClient tcpClient = new TCPClient(clientSocket);
                     Thread tcpThread = new Thread(tcpClient);
                     tcpThread.start();
@@ -140,15 +133,13 @@ public class FileListener extends FileAlterationListenerAdaptor {
                         "Warn", JOptionPane.WARNING_MESSAGE);
                 System.out.println("Please upload the correct file!");
             }
-            System.out.println("New File " + filepath + "has been synchronized!");
         }
 
         @Override
         public void onFileDelete(File file) {
             String filepath = GenieUI.FileMonitorPATH + "\\" + file.getName();
             System.out.println("File " + filepath + " Delete!");
-            System.out.println("Please upload a new " + file.getName());
+            //System.out.println("Please upload a new " + file.getName());
         }
 
 }
-
