@@ -13,8 +13,9 @@ public class FileListener extends FileAlterationListenerAdaptor {
         @Override
         public void onFileChange(File file) {
             String fileName = file.getName();
+            //System.out.println(file.getPath());
             String fileExtention = fileName.substring(fileName.lastIndexOf(".") + 1).trim();
-            String filepath = GenieUI.FileMonitorPATH + "\\" + fileName;
+            String filepath = file.getPath();
             QueryCommand type = QueryCommand.getCommandName(fileName);
             System.out.println(type);
             if (type!=null){
@@ -77,7 +78,7 @@ public class FileListener extends FileAlterationListenerAdaptor {
         public void onFileCreate(File file) {
             String fileName = file.getName();
             String fileExtention = fileName.substring(fileName.lastIndexOf(".") + 1).trim();
-            String filepath = GenieUI.FileMonitorPATH + "\\" + fileName;
+            String filepath = file.getPath();;
             QueryCommand type = QueryCommand.getCommandName(fileName);
             System.out.println(type);
             if (type!=null){
@@ -137,7 +138,7 @@ public class FileListener extends FileAlterationListenerAdaptor {
 
         @Override
         public void onFileDelete(File file) {
-            String filepath = GenieUI.FileMonitorPATH + "\\" + file.getName();
+            String filepath = file.getPath();
             System.out.println("File " + filepath + " Delete!");
             //System.out.println("Please upload a new " + file.getName());
         }
