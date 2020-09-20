@@ -12,6 +12,7 @@ public class FileListener extends FileAlterationListenerAdaptor {
 
         @Override
         public void onFileChange(File file) {
+            System.out.println("------------CHANGE FILE---------");
             String fileName = file.getName();
             //System.out.println(file.getPath());
             String fileExtention = fileName.substring(fileName.lastIndexOf(".") + 1).trim();
@@ -57,10 +58,10 @@ public class FileListener extends FileAlterationListenerAdaptor {
                 System.out.println("Send Update");
                 try {
                     Socket clientSocket = GenieUI.initSSLSocket();
-//                    Socket clientSocket = new Socket(IP, PORT);
                     TCPClient tcpClient = new TCPClient(clientSocket);
-                    Thread tcpThread = new Thread(tcpClient);
-                    tcpThread.start();
+                    //Thread tcpThread = new Thread(tcpClient);
+                    //tcpThread.start();
+                    tcpClient.run();
                 } catch (IOException e1) {
                     e1.printStackTrace();
                 }
@@ -76,6 +77,7 @@ public class FileListener extends FileAlterationListenerAdaptor {
 
         @Override
         public void onFileCreate(File file) {
+            System.out.println("------------CREATE NEW FILE---------");
             String fileName = file.getName();
             String fileExtention = fileName.substring(fileName.lastIndexOf(".") + 1).trim();
             String filepath = file.getPath();;
@@ -121,8 +123,9 @@ public class FileListener extends FileAlterationListenerAdaptor {
                 try {
                     Socket clientSocket = GenieUI.initSSLSocket();
                     TCPClient tcpClient = new TCPClient(clientSocket);
-                    Thread tcpThread = new Thread(tcpClient);
-                    tcpThread.start();
+                    //Thread tcpThread = new Thread(tcpClient);
+                    //tcpThread.start();
+                    tcpClient.run();
                 } catch (IOException e1) {
                     e1.printStackTrace();
                 }
@@ -139,7 +142,7 @@ public class FileListener extends FileAlterationListenerAdaptor {
         @Override
         public void onFileDelete(File file) {
             String filepath = file.getPath();
-            System.out.println("File " + filepath + " Delete!");
+            System.out.println("======== File " + filepath + " Delete! =======");
             //System.out.println("Please upload a new " + file.getName());
         }
 
