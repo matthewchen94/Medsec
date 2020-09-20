@@ -19,15 +19,15 @@ import java.security.KeyStore;
 
 public class GenieUI {
     private static int PORT = 11111;
-    private static String IP = "13.58.243.191";
-
+    private static String IP = "localhost";
+    private static String FileMonitorPATH="D:\\1_test"; //update 20/09/2020
     private static long prevTime;
     // 30 mins delay for update
     private static long DELAY_UPDATE = 12 * 60 * 60 * 1000;
 
     private static final Path PATH = Paths.get
             ("src/main/resources/").toAbsolutePath();
-    private static final String GENIE_DB_NAME = "TestData/user.json";
+    //private static final String GENIE_DB_NAME = "TestData/user.json";
     private static final String CLIENT_KEY_STORE_PASSWORD = "client";
     private static final String CLIENT_TRUST_KEY_STORE_PASSWORD = "client";
     private static final String CLIENT_KEY_PATH = "/client_ks.jks";
@@ -41,12 +41,13 @@ public class GenieUI {
 
 
     private JPanel panelMain;
-
     private JTextField ipField;
     private JTextField portField;
+    private JTextField monitorPath; //update 20/09/2020
     private JButton sendUpdateButton;
     private JButton updateIPButton;
     private JButton updatePortButton;
+    private JButton updateMonitorButton;   //update 20/09/2020
     private JTextArea consoleTextArea;
     private JScrollPane consoleScrollPane;
     private JTextField pathTextArea;
@@ -66,6 +67,7 @@ public class GenieUI {
         ipField.setText(IP);
         portField.setText(String.valueOf(PORT));
         pathTextArea.setText(FILE_UPLOAD_PATH);
+        monitorPath.setText(FileMonitorPATH);     //update 20/09/2020
 //        updateIntervalHours.setValue(12);
 //        updateIntervalHours.setMinimumSize(new Dimension(1,1));
 //
@@ -92,6 +94,16 @@ public class GenieUI {
             public void actionPerformed(ActionEvent e) {
                 PORT = Integer.parseInt(portField.getText());
                 System.out.println("Port has been set to : " + PORT);
+            }
+        });
+        //Update monitor file path button  20/09/2020
+        updateMonitorButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                FileMonitorPATH = monitorPath.getText();
+                System.out.println("Location of files from GENIE has been set to : " + FileMonitorPATH);
+                FileMonitor monitor = new FileMonitor();
+                monitor.MonitorStart(FileMonitorPATH);
             }
         });
         // Update Patient File Path button
