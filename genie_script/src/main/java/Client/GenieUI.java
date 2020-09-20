@@ -20,7 +20,7 @@ import java.security.KeyStore;
 public class GenieUI {
     private static int PORT = 11111;
     private static String IP = "13.58.243.191";
-    private static String FileMonitorPATH="D:\\1_test"; //update 20/09/2020
+    public static String FileMonitorPATH="D:\\1_test"; //update 20/09/2020
     private static long prevTime;
     // 30 mins delay for update
     private static long DELAY_UPDATE = 12 * 60 * 60 * 1000;
@@ -121,13 +121,14 @@ public class GenieUI {
                     String fileName = file.getName();
                     String fileExtention = fileName.substring(fileName.lastIndexOf(".") + 1).trim();
                     //Determine the command type
-//                    System.out.print("fileExtention"+fileExtention);
+                    System.out.println("fileExtention "+fileExtention);
                     QueryCommand type = QueryCommand.getCommandName(file.getName());
-                    if (type!=null){
+                    System.out.println(type);
+                    if (type==QueryCommand.FILE){
 
-                        if ((type==QueryCommand.FILE && fileExtention.equals("pdf"))
-                                || (type!=QueryCommand.FILE && fileExtention.equals("html"))
-                                || (type!=QueryCommand.FILE && fileExtention.equals("xls")))
+                        if ((type==QueryCommand.FILE && fileExtention.equals("pdf")))
+                        //        || (type!=QueryCommand.FILE && fileExtention.equals("html"))
+                        //        || (type!=QueryCommand.FILE && fileExtention.equals("xls")))
                         {
                             COMMAND = type;
                             pathTextArea.setText(file.getAbsolutePath());
@@ -139,8 +140,7 @@ public class GenieUI {
                             JPanel panel1 = new JPanel();
                             JOptionPane.showMessageDialog(panel1,
                                     "Invalid files in the current selection.\n" +
-                                            "Please upload the file with '.html', '.xls' extension for uploading the Genie data\n" +
-                                            "or with '.pdf' extension named with 'File' for uploading reports to users.",
+                                            "Please upload the file with '.pdf' extension named with 'File' for uploading reports to users.\n",
                                     "Warn", JOptionPane.WARNING_MESSAGE);
                             COMMAND = null;
                             pathTextArea.setText("");
@@ -153,7 +153,7 @@ public class GenieUI {
                         JOptionPane.showMessageDialog(panel2,
                                 "Invalid files in the current selection.\n" +
                                         "Please upload the file named with one of the QueryCommand:\n"+
-                                        "'Appointment', 'Patient', 'Doctor', 'Hospital', 'Pathology', 'Radiology','Resource', or 'File'",
+                                        "'File'",
                                 "Warn", JOptionPane.WARNING_MESSAGE);
                         COMMAND = null;
                         pathTextArea.setText("");
