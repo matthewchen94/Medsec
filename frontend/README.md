@@ -13,23 +13,32 @@ For help getting started with Flutter, view our
 [online documentation](https://flutter.dev/docs), which offers tutorials,
 samples, guidance on mobile development, and a full API reference.
 
-## Main functions and related files
+## Bug fixes, extended functions and corresponding modified files 
 
-### ```~/{projectname}/frontend/lib/screens/login.dart```  
+#### ```~/{projectname}/frontend/lib/screens/login.dart```  
 
 This file is designed to realise the following functions:User login, change password, forget user name. 
 For the extended functions, we added user verification function and forget password option.
 
-### ```~/{projectname}/frontend/lib/screens/register.dart```  
+#### ```~/{projectname}/frontend/lib/screens/register.dart```  
 
 This file is mainly used to user registration function. And for the extended function, we added the user verification function. When the user has no right to register or the email has already been registered, there will be a dialog to let the user know why he/she can not register successfully.
 
-### ```~/{projectname}/frontend/lib/screens/appiontmentfile.dart``` 
+#### ```~/{projectname}/frontend/lib/screens/appiontmentfile.dart``` 
 
 This part is mainly used to display the user's appointment pdf file and its sharing. The sharing function is a new function we added. The relative code is in the following function and we chose to share the pdf file by its url:
 '''Future<void> _sharepdfFromUrl() async {...}'''
 
-### ```~/{projectname}/frontend/lib/screens/doctordetial.dart``` 
+#### ```~/{projectname}/frontend/lib/screens/doctordetial.dart``` 
+
+Just like hospitaldetail.dart, pathologydetail.dart and radiologydetail.dart, this file is mainly used to display detailed information, such as phone number, eamil, etc. Click the phone icon to jump directly to the page for making a call, and click the email icon to jump directly to the page for sending the email.
+
+#### ```~/{projectname}/google-services.json``` 
+
+Replaced the original file( ```~/{projectname}/frontend/app/src/google-services.json```) with this new file to background message prompts, as shown in the following figure:
+
+
+
 
 
 
