@@ -17,8 +17,11 @@ samples, guidance on mobile development, and a full API reference.
 
 #### ```~/{projectname}/frontend/lib/screens/login.dart```  
 
-This file is designed to realise the following functions:User login, change password, forget user name. 
+*This file is designed to realise the following functions:User login, change password, forget user name. 
 For the extended functions, we added user verification function and forget password option.
+
+*We used two screen adaptation solutions to solve the display bugs. They are:
+content: SingleChildScrollView() and Extended() Widget which respectively to solve the dialog window and static picture or text display problems.
 
 #### ```~/{projectname}/frontend/lib/screens/register.dart```  
 
@@ -33,9 +36,12 @@ This part is mainly used to display the user's appointment pdf file and its shar
 
 Just like hospitaldetail.dart, pathologydetail.dart and radiologydetail.dart, this file is mainly used to display detailed information, such as phone number, eamil, etc. Click the phone icon to jump directly to the page for making a call, and click the email icon to jump directly to the page for sending the email.
 
+
 #### ```~/{projectname}/google-services.json``` 
 
 Replaced the original file( ```~/{projectname}/frontend/app/src/google-services.json```) with this new file to background message prompts, as shown in the following figure:
+[Click here: Sample Picture](https://github.com/LINLUOOO/MMS/blob/master/sampleOfGoogleserviceJson.jpg)
+
 
 
 
