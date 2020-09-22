@@ -30,9 +30,9 @@ This file is mainly used to user registration function. And for the extended fun
 #### ```~/{projectname}/frontend/lib/screens/appiontmentfile.dart``` 
 
 This part is mainly used to display the user's appointment pdf file and its sharing. The sharing function is a new function we added. The relative code is in the following function and we chose to share the pdf file by its url:
-'''dart
+```dart
 Future<void> _sharepdfFromUrl() async {...}
-'''
+```
 
 #### ```~/{projectname}/frontend/lib/screens/doctordetial.dart``` 
 
@@ -40,19 +40,19 @@ Future<void> _sharepdfFromUrl() async {...}
 
 *For the ios version, we have fixed some bugs, as follows:
 1. When the user clicks on the phone icon, the user cannot jump to the page where the call is made. Solution：
-'''dart
+```dart
 var url = 'tel:' + _doctor.phone.toString().replaceAll(' ', "");
-'''
+```
 
 2. When the user clicks on the map icon, the user cannot jump to the map app. Solution：
-'''dart
+```dart
                       trailing: Icon(Icons.location_on),
                             onTap: () {
                               launchURL("https://maps.google.com/?q=" +
                                   _hospitalState.address
                                       .toString()
                                       .replaceAll(' ', "%20"));
-'''
+```
 Similar problems have also appeared in these files：hospitaldetail.dart, pathologydetail.dart and radiologydetail.dart.
 
 
