@@ -34,13 +34,35 @@ This part is mainly used to display the user's appointment pdf file and its shar
 
 #### ```~/{projectname}/frontend/lib/screens/doctordetial.dart``` 
 
-Just like hospitaldetail.dart, pathologydetail.dart and radiologydetail.dart, this file is mainly used to display detailed information, such as phone number, eamil, etc. Click the phone icon to jump directly to the page for making a call, and click the email icon to jump directly to the page for sending the email.
+*Just like hospitaldetail.dart, pathologydetail.dart and radiologydetail.dart, this file is mainly used to display detailed information, such as phone number, eamil, etc. Click the phone icon to jump directly to the page for making a call, and click the email icon to jump directly to the page for sending the email.
+
+*For the ios version, we have fixed some bugs, as follows:
+1. When the user clicks on the phone icon, the user cannot jump to the page where the call is made. Solution：
+'''var url = 'tel:' + _doctor.phone.toString().replaceAll(' ', "");'''
+
+2. When the user clicks on the map icon, the user cannot jump to the map app. Solution：
+'''trailing: Icon(Icons.location_on),
+                            onTap: () {
+                              launchURL("https://maps.google.com/?q=" +
+                                  _hospitalState.address
+                                      .toString()
+                                      .replaceAll(' ', "%20"));'''
+Similar problems have also appeared in these files：hospitaldetail.dart, pathologydetail.dart and radiologydetail.dart.
 
 
 #### ```~/{projectname}/google-services.json``` 
 
 Replaced the original file( ```~/{projectname}/frontend/app/src/google-services.json```) with this new file to background message prompts, as shown in the following figure:
 [Click here: Sample Picture](https://github.com/LINLUOOO/MMS/blob/master/sampleOfGoogleserviceJson.jpg)
+
+
+## Author
+
+Lin Luo - linluo@student.unimelb.edu.au
+
+## Acknowledgements
+
+Thanks to the team's front-end developers and front-end testers for all their efforts.
 
 
 
