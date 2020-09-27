@@ -1,23 +1,25 @@
 package Client;
 
 import SocketConnection.QueryCommand;
+import org.apache.poi.hssf.usermodel.HSSFCell;
+import org.apache.poi.hssf.usermodel.HSSFRow;
+import org.apache.poi.hssf.usermodel.HSSFSheet;
+import org.apache.poi.hssf.usermodel.HSSFWorkbook;
+import org.apache.poi.poifs.filesystem.POIFSFileSystem;
 
 import javax.net.ssl.KeyManagerFactory;
 import javax.net.ssl.SSLContext;
 import javax.net.ssl.TrustManagerFactory;
 import javax.swing.*;
-import javax.swing.filechooser.FileNameExtensionFilter;
 import javax.swing.text.DefaultCaret;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.IOException;
-import java.io.PrintStream;
+import java.io.*;
 import java.net.Socket;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.security.KeyStore;
+
 
 public class GenieUI {
     private static int PORT = 11111;
@@ -47,22 +49,27 @@ public class GenieUI {
     private JTextField ipField;
     private JTextField portField;
     private JTextField monitorPath; //update 20/09/2020
-    private JButton sendUpdateButton;
     private JButton updateIPButton;
     private JButton updateMonitorButton;   //update 20/09/2020
-    private JTextArea consoleTextArea;
-    private JScrollPane consoleScrollPane;
+
 
     // update 20/09/2020
     private JButton choosePath;
     private JTextField pdfPath;
-    private JButton updatePdfButton;
+    private JButton Pdf_path_Button;
+
     //    waiting to be finished in Sprint2
+    private JButton sendUpdateButton; // has to change to be a resource.xls modify button
     private JTextField resource_UserID;
     private JTextField resource_Title;
     private JComboBox selectPurpose;
     private JTextArea resource_Messages;
     private JScrollPane messageScrollPane;
+    private JButton uploadPDFButton;
+    private JTextField pdf_RelatedID_field;
+    private JTextField pdfLabel;
+    private JScrollPane consoleScrollPane;
+    private JTextArea consoleTextArea;
 
     public GenieUI() {
         // Set print stream to output textarea
@@ -126,95 +133,100 @@ public class GenieUI {
 
             }
         });
-        // Update Patient File Path button
-        updatePdfButton.addActionListener(new ActionListener() {
+
+        // Update PDF File Path button
+        Pdf_path_Button.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
+
                 JFileChooser jfc = new JFileChooser();
+                jfc.setFileSelectionMode(JFileChooser.FILES_ONLY);
                 jfc.setCurrentDirectory(new File("."));
-                jfc.setFileFilter(new FileNameExtensionFilter("PDF file",".pdf"));
-
-                // Display the file dialog
-                jfc.showSaveDialog(panelMain);
-                try {
-                    // Use File class to obtain the file from selection
-                    File file = jfc.getSelectedFile();//
-                    System.out.println("Upload "+ file.getName() +" File");
-                    String fileName = file.getName();
-                    String fileExtention = fileName.substring(fileName.lastIndexOf(".") + 1).trim();
-                    //Determine the command type
-                    System.out.println("fileExtention "+fileExtention);
-                    QueryCommand type = QueryCommand.getCommandName(file.getName());
-                    System.out.println(type);
-                    if (type==QueryCommand.FILE){
-
-                        if ((type==QueryCommand.FILE && fileExtention.equals("pdf")))
-                        {
-                            COMMAND = type;
-                            pdfPath.setText(file.getAbsolutePath());
-                            FILE_EXTENSION = fileExtention;
-                        }
-                        else{
-                            JPanel panel1 = new JPanel();
-                            JOptionPane.showMessageDialog(panel1,
-                                    "Invalid files in the current selection.\n" +
-                                            "Please upload the file with '.pdf' extension named with 'File' for uploading reports to users.\n",
-                                    "Warn", JOptionPane.WARNING_MESSAGE);
-                            COMMAND = null;
-                            pdfPath.setText("");
-                            FILE_EXTENSION = null;
-                            System.out.println("Upload Failed");
-                        }
-
-                    }else{
-                        JPanel panel2 = new JPanel();
-                        JOptionPane.showMessageDialog(panel2,
-                                "Invalid files in the current selection.\n" +
-                                        "Please upload the file named with one of the QueryCommand:\n"+
-                                        "'File'",
-                                "Warn", JOptionPane.WARNING_MESSAGE);
-                        COMMAND = null;
-                        pdfPath.setText("");
-                        FILE_EXTENSION = null;
-                        System.out.println("Upload Failed");
-                    }
-                } catch (Exception e2) {
-                    JPanel panel3 = new JPanel();
-                    JOptionPane.showMessageDialog(panel3,
-                            "There are no files in the current selection.",
-                            "Warn", JOptionPane.WARNING_MESSAGE);
-                    COMMAND = null;
-                    pdfPath.setText("");
-                    FILE_EXTENSION = null;
-                    System.out.println("Upload Failed");
-                }
-                FILE_UPLOAD_PATH = pdfPath.getText();
-                System.out.println("Command has been set to : " + COMMAND);
-                System.out.println("Path has been set to : " + FILE_UPLOAD_PATH);
+                jfc.setMultiSelectionEnabled(false);
+                jfc.showDialog(panelMain,"Choose");
+                File file = jfc.getSelectedFile();
+                FILE_UPLOAD_PATH = file.getAbsolutePath();
+                pdfPath.setText(FILE_UPLOAD_PATH);
             }
         });
 
-        // Create new socket and send update
+        // Create new action listener for button sendUpdate and send update
         sendUpdateButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                if (COMMAND != null) {
-                    System.out.println("Send Update");
+                String resourcePath = FileMonitorPATH + "/Resource.xls";
+                File ResourceFile = new File(resourcePath);
+                if (!ResourceFile.exists()) {
+
+                    HSSFWorkbook workbook = new HSSFWorkbook();
+                    HSSFSheet sheet = workbook.createSheet();
+                    HSSFRow row = sheet.createRow(0);
+                    HSSFCell cell = row.createCell(0);
+                    cell.setCellValue("ID");
+                    cell = row.createCell(1);
+                    cell.setCellValue("Uid");
+                    cell = row.createCell(2);
+                    cell.setCellValue("Name");
+                    cell = row.createCell(3);
+                    cell.setCellValue("Website or Messages");
                     try {
-                        Socket clientSocket = initSSLSocket();
-                        TCPClient tcpClient = new TCPClient(clientSocket);
-                        Thread tcpThread = new Thread(tcpClient);
-                        tcpThread.start();
+                        FileOutputStream resourceOutput = new FileOutputStream(resourcePath);
+                        workbook.write(resourceOutput);
+                        resourceOutput.close();
                     } catch (IOException e1) {
                         e1.printStackTrace();
                     }
+                    System.out.println("Resource.xls has been created");
+                } else {
+                    System.out.println("Resource.xls already exists");
                 }
-                else{
-                    JPanel panel4 = new JPanel();
-                    JOptionPane.showMessageDialog(panel4,
-                            "Please upload the correct file!",
-                            "Warn", JOptionPane.WARNING_MESSAGE);
-                    System.out.println("Please upload the correct file!");
+
+                try{
+                    FileInputStream fs=new FileInputStream(resourcePath);
+                    POIFSFileSystem ps=new POIFSFileSystem(fs);
+                    HSSFWorkbook wb=new HSSFWorkbook(ps);
+                    HSSFSheet sheet=wb.getSheetAt(0);
+                    HSSFRow row=sheet.getRow(0);
+                    FileOutputStream out=new FileOutputStream(resourcePath);
+                    row=sheet.createRow((short)(sheet.getLastRowNum()+1));
+                    row.createCell(0).setCellValue(sheet.getLastRowNum());
+                    row.createCell(1).setCellValue(resource_UserID.getText());
+                    row.createCell(2).setCellValue(resource_Title.getText());
+                    row.createCell(3).setCellValue(resource_Messages.getText());
+                    out.flush();
+                    wb.write(out);
+                    out.close();
+                }catch (IOException e2){
+                    e2.printStackTrace();
+                }
+            }
+        });
+
+        //Create new action listener for button uploadPDFButton and send pdf file
+        uploadPDFButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                try {
+
+                    File pdfFile = new File(FILE_UPLOAD_PATH);
+
+                    if (pdfFile.renameTo(new File( FileMonitorPATH+ "/File-" + pdf_RelatedID_field.getText() + ".pdf"))) {
+                        System.out.println("PDF file has been updated successfully!");
+                    } else {
+                        System.out.println("Fail to update!");
+                    }
+                } catch (Exception e1) {
+                    e1.printStackTrace();
+                }
+            }
+        });
+        selectPurpose.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                if (selectPurpose.getSelectedItem().toString().equals("For Appointment")){
+                    pdfLabel.setText("Appointment ID:");
+                }else{
+                    pdfLabel.setText("Patient ID:");
                 }
             }
         });
@@ -233,8 +245,7 @@ public class GenieUI {
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         frame.pack();
         frame.setVisible(true);
-        frame.setSize(1066, 500);
-
+        frame.setSize(1066, 700);
 
         System.out.println("Client Scheduled Script Running");
     }
@@ -263,4 +274,5 @@ public class GenieUI {
         }
         return null;
     }
+
 }
