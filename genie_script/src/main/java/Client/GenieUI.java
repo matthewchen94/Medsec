@@ -11,6 +11,7 @@ import javax.net.ssl.KeyManagerFactory;
 import javax.net.ssl.SSLContext;
 import javax.net.ssl.TrustManagerFactory;
 import javax.swing.*;
+import javax.swing.filechooser.FileNameExtensionFilter;
 import javax.swing.text.DefaultCaret;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -63,6 +64,7 @@ public class GenieUI {
     private JTextField resource_UserID;
     private JTextField resource_Title;
     private JComboBox selectPurpose;
+
     private JTextArea resource_Messages;
     private JScrollPane messageScrollPane;
     private JButton uploadPDFButton;
@@ -141,6 +143,7 @@ public class GenieUI {
 
                 JFileChooser jfc = new JFileChooser();
                 jfc.setFileSelectionMode(JFileChooser.FILES_ONLY);
+                jfc.setFileFilter(new FileNameExtensionFilter("pdf file", "pdf"));
                 jfc.setCurrentDirectory(new File("."));
                 jfc.setMultiSelectionEnabled(false);
                 jfc.showDialog(panelMain,"Choose");
@@ -209,7 +212,6 @@ public class GenieUI {
                 try {
 
                     File pdfFile = new File(FILE_UPLOAD_PATH);
-
                     if (pdfFile.renameTo(new File( FileMonitorPATH+ "/File-" + pdf_RelatedID_field.getText() + ".pdf"))) {
                         System.out.println("PDF file has been updated successfully!");
                     } else {
