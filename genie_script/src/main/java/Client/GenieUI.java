@@ -210,7 +210,7 @@ public class GenieUI {
             @Override
             public void actionPerformed(ActionEvent e) {
                 try {
-
+                    // TODO: not finished. it will be uploaded directly instead of move to monitor path
                     File pdfFile = new File(FILE_UPLOAD_PATH);
                     if (pdfFile.renameTo(new File( FileMonitorPATH+ "/File-" + pdf_RelatedID_field.getText() + ".pdf"))) {
                         System.out.println("PDF file has been updated successfully!");
