@@ -13,6 +13,8 @@ import org.jsoup.select.Elements;
 
 import java.io.*;
 import java.net.Socket;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 
 /**
@@ -44,6 +46,7 @@ public class JSONWriter {
         public void sendUpdateData(Socket connectionSocket) throws
                 Exception {
             sendAuthentication(connectionSocket);
+            //System.out.println("+++++++++++++connect+++++++++++++");
 //            ArrayList<QueryCommand> commands = new ArrayList<>();
             // Update Patient data
 //            commands.add(QueryCommand.PATIENT);
@@ -53,14 +56,18 @@ public class JSONWriter {
 //            commands.add(QueryCommand.FILE);
             //sendGENIEData(commands, connectionSocket);
 //            htmlToJSON(connectionSocket, QueryCommand.APPOINTMENT, "src/main/resources/test.html");
-            if (GenieUI.FILE_EXTENSION.equals("html") && GenieUI.COMMAND != QueryCommand.FILE){
+            if (GenieUI.FILE_EXTENSION.equals("html") && GenieUI.COMMAND != QueryCommand.FILE && GenieUI.COMMAND != QueryCommand.RESOURCEFILE){
                 sendHtml(connectionSocket, GenieUI.COMMAND, GenieUI.FILE_UPLOAD_PATH);
             }
-            else if (GenieUI.FILE_EXTENSION.equals("xls") && GenieUI.COMMAND != QueryCommand.FILE){
+            else if (GenieUI.FILE_EXTENSION.equals("xls") && GenieUI.COMMAND != QueryCommand.FILE && GenieUI.COMMAND != QueryCommand.RESOURCEFILE){
+                System.out.println(GenieUI.FILE_UPLOAD_PATH + " " + GenieUI.COMMAND);
                 sendExcel(connectionSocket, GenieUI.COMMAND, GenieUI.FILE_UPLOAD_PATH);
             }
             else if (GenieUI.FILE_EXTENSION.equals("pdf") && GenieUI.COMMAND == QueryCommand.FILE){
-                sendFile(connectionSocket, GenieUI.COMMAND, GenieUI.FILE_UPLOAD_PATH);
+                sendFileA(connectionSocket, GenieUI.COMMAND, GenieUI.FILE_UPLOAD_PATH);
+            }
+            else if (GenieUI.FILE_EXTENSION.equals("pdf") && GenieUI.COMMAND == QueryCommand.RESOURCEFILE){
+                sendFileP(connectionSocket, GenieUI.COMMAND, GenieUI.FILE_UPLOAD_PATH);
             }
             sendDisconnect(connectionSocket);
             System.out.println("Upload Finished!");
@@ -98,6 +105,7 @@ public class JSONWriter {
 //            String encryptedMsg = SymmetricEncrypt.getInstance().encrypt(jsonObject.toString());
                 dos.writeUTF(jsonObject + "\n");
                 dos.flush();
+                //System.out.println("===============disconnect================");
             } catch (Exception e) {
                 e.printStackTrace();
             }
@@ -218,7 +226,7 @@ public class JSONWriter {
         /**
         * Send file data from client to the server
         */
-        private void sendFile(Socket connectionSocket, QueryCommand command, String uploadPath){
+        private void sendFileA(Socket connectionSocket, QueryCommand command, String uploadPath){
 
             try {
                 OutputStream os = connectionSocket.getOutputStream();
@@ -232,7 +240,7 @@ public class JSONWriter {
                 JSONObject jsonObject = new JSONObject();
 
                 msg.put("command", command.toString());
-                jsonObject.put("FileName", myFile.getName());
+                jsonObject.put("FileName", "FileA-" + GenieUI.pdf_relatedID + ".pdf");
                 jsonObject.put("FileSize", myFile.length());
                 msg.put("doc", jsonObject);
                 System.out.println(msg);
@@ -243,6 +251,37 @@ public class JSONWriter {
 
             } catch (IOException e) {
                 e.printStackTrace();
+            }
+
+        }
+        private void sendFileP(Socket connectionSocket, QueryCommand command, String uploadPath){
+
+            try {
+               OutputStream os = connectionSocket.getOutputStream();
+               DataOutputStream dos = new DataOutputStream(os);
+               LocalDate date = LocalDate.now(); // get the current date
+               DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
+               String createdate = date.format(formatter);
+               UploadFileManager uploadedFile = new UploadFileManager(uploadPath);
+               System.out.println("Uploaded Success");
+               File myFile = uploadedFile.readFile();
+
+               JSONObject msg = new JSONObject();
+               JSONObject jsonObject = new JSONObject();
+
+               msg.put("command", command.toString());
+               jsonObject.put("FileName", "FileP-" + GenieUI.pdf_relatedID + ".pdf");
+               jsonObject.put("Date", createdate);
+               jsonObject.put("FileSize", myFile.length());
+               msg.put("doc", jsonObject);
+               System.out.println(msg);
+               dos.writeUTF(msg + "\n");
+               dos.flush();
+
+               sendData(connectionSocket, myFile);
+
+            } catch (IOException e) {
+               e.printStackTrace();
             }
 
         }
