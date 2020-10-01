@@ -20,6 +20,8 @@ import java.net.Socket;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.security.KeyStore;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 
 
 public class GenieUI {
@@ -44,7 +46,7 @@ public class GenieUI {
     public static String FILE_EXTENSION = null;
     public static String PATIENT_FILE_UPLOAD_PATH = "";
     public static String APPOINTMENT_FILE_UPLOAD_PATH = "";
-
+    public static String pdf_relatedID;
 
     private JPanel panelMain;
     private JTextField ipField;
@@ -120,8 +122,8 @@ public class GenieUI {
         updateMonitorButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                if (GenieUI.monitorThread == false){
-                    GenieUI.monitorThread = true;
+                if (monitorThread == false){
+                    monitorThread = true;
 //                    FileMonitorPATH = monitorPath.getText();
                     System.out.println("Location of files from GENIE has been set to : " + FileMonitorPATH);
                     FileMonitor monitor = new FileMonitor();
@@ -165,13 +167,16 @@ public class GenieUI {
                     HSSFSheet sheet = workbook.createSheet();
                     HSSFRow row = sheet.createRow(0);
                     HSSFCell cell = row.createCell(0);
-                    cell.setCellValue("ID");
+                    cell.setCellValue("Id");
                     cell = row.createCell(1);
                     cell.setCellValue("Uid");
                     cell = row.createCell(2);
                     cell.setCellValue("Name");
                     cell = row.createCell(3);
-                    cell.setCellValue("Website or Messages");
+                    //cell.setCellValue("Website");
+                    cell.setCellValue("Date");
+                    cell = row.createCell(4);
+                    cell.setCellValue("Content");
                     try {
                         FileOutputStream resourceOutput = new FileOutputStream(resourcePath);
                         workbook.write(resourceOutput);
@@ -188,6 +193,10 @@ public class GenieUI {
                     FileInputStream fs=new FileInputStream(resourcePath);
                     POIFSFileSystem ps=new POIFSFileSystem(fs);
                     HSSFWorkbook wb=new HSSFWorkbook(ps);
+                    LocalDate date = LocalDate.now(); // get the current date
+                    DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
+                    String createdate = date.format(formatter);
+                    System.out.println(createdate);
                     HSSFSheet sheet=wb.getSheetAt(0);
                     HSSFRow row=sheet.getRow(0);
                     FileOutputStream out=new FileOutputStream(resourcePath);
@@ -195,7 +204,9 @@ public class GenieUI {
                     row.createCell(0).setCellValue(sheet.getLastRowNum());
                     row.createCell(1).setCellValue(resource_UserID.getText());
                     row.createCell(2).setCellValue(resource_Title.getText());
-                    row.createCell(3).setCellValue(resource_Messages.getText());
+                    row.createCell(3).setCellValue(createdate);
+                    row.createCell(4).setCellValue(resource_Messages.getText());
+                    //row.createCell(3).setCellValue(resource_Messages.getText());
                     out.flush();
                     wb.write(out);
                     out.close();
@@ -210,13 +221,58 @@ public class GenieUI {
             @Override
             public void actionPerformed(ActionEvent e) {
                 try {
-                    // TODO: not finished. it will be uploaded directly instead of move to monitor path
                     File pdfFile = new File(FILE_UPLOAD_PATH);
-                    if (pdfFile.renameTo(new File( FileMonitorPATH+ "/File-" + pdf_RelatedID_field.getText() + ".pdf"))) {
-                        System.out.println("PDF file has been updated successfully!");
-                    } else {
-                        System.out.println("Fail to update!");
+                    String fileName = pdfFile.getName();
+                    String fileExtention = fileName.substring(fileName.lastIndexOf(".") + 1).trim();
+                    if (selectPurpose.getSelectedItem().toString().equals("For Appointment")){
+                        if (fileExtention.equals("pdf")){
+                            COMMAND = QueryCommand.getCommandName("FileA");
+                            FILE_EXTENSION = fileExtention;
+                            pdf_relatedID = pdf_RelatedID_field.getText();
+                        }else{
+                            JPanel panel1 = new JPanel();
+                            JOptionPane.showMessageDialog(panel1,
+                                    "Invalid files in the current selection.\n" +
+                                    "Please upload file with '.pdf' extension\n",
+                                    "Warn", JOptionPane.WARNING_MESSAGE);
+                            COMMAND = null;
+                            FILE_EXTENSION = null;
+                            System.out.println("Upload Failed");
+                        }
+                    }else{
+                        if (fileExtention.equals("pdf")){
+                            COMMAND = QueryCommand.getCommandName("FileP");
+                            FILE_EXTENSION = fileExtention;
+                            pdf_relatedID = pdf_RelatedID_field.getText();
+                        }else{
+                            JPanel panel1 = new JPanel();
+                            JOptionPane.showMessageDialog(panel1,
+                                    "Invalid files in the current selection.\n" +
+                                            "Please upload file with '.pdf' extension\n",
+                                    "Warn", JOptionPane.WARNING_MESSAGE);
+                            COMMAND = null;
+                            FILE_EXTENSION = null;
+                            System.out.println("Upload Failed");
+                        }
                     }
+                    if (COMMAND != null) {
+                        System.out.println("Send Update");
+                        try {
+                            Socket clientSocket = GenieUI.initSSLSocket();
+                            TCPClient tcpClient = new TCPClient(clientSocket);
+                            tcpClient.run();
+                        } catch (IOException e1) {
+                            e1.printStackTrace();
+                        }
+                    }
+                    else{
+                        JPanel panel4 = new JPanel();
+                        JOptionPane.showMessageDialog(panel4,
+                                "Please upload the correct file!",
+                                "Warn", JOptionPane.WARNING_MESSAGE);
+                        System.out.println("Please upload the correct file!");
+                    }
+
                 } catch (Exception e1) {
                     e1.printStackTrace();
                 }
