@@ -34,8 +34,8 @@ public class FileMonitor {
                     //System.out.println(filepath);
                     if (type!=null){
 
-                        if ((type==QueryCommand.FILE && fileExtention.equals("pdf"))
-                                || (type!=QueryCommand.FILE && fileExtention.equals("html"))
+                        if (/*(type==QueryCommand.FILE && fileExtention.equals("pdf"))
+                                ||*/ (type!=QueryCommand.FILE && fileExtention.equals("html"))
                                 || (type!=QueryCommand.FILE && fileExtention.equals("xls")))
                         {
                             GenieUI.COMMAND = type;
@@ -99,3 +99,4 @@ public class FileMonitor {
             }).start();
         }
 }
+
