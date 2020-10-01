@@ -6,7 +6,7 @@ package SocketConnection;
  */
 public enum QueryCommand {
     AUTHENTICATION("Authentication",1),
-    FILE("File",2),
+    FILE("FileA",2),
     APPOINTMENT("Appointment",3),
     PATIENT("Patient",4),
     DOCTOR("Doctor",5),
@@ -14,8 +14,8 @@ public enum QueryCommand {
     PATHOLOGY("Pathology",7),
     RADIOLOGY("Radiology",8),
     RESOURCE("Resource",9),
-    DISCONNECTION("Disconnection",10);
-
+    DISCONNECTION("Disconnection",10),
+    RESOURCEFILE("FileP",11);
 
     private String name;
     private int index;
