@@ -21,8 +21,8 @@ public class FileListener extends FileAlterationListenerAdaptor {
             System.out.println(type);
             if (type!=null){
 
-                if ((type==QueryCommand.FILE && fileExtention.equals("pdf"))
-                        || (type!=QueryCommand.FILE && fileExtention.equals("html"))
+                if (/*(type==QueryCommand.FILE && fileExtention.equals("pdf"))
+                        ||*/ (type!=QueryCommand.FILE && fileExtention.equals("html"))
                         || (type!=QueryCommand.FILE && fileExtention.equals("xls")))
                 {
                     GenieUI.COMMAND = type;
@@ -33,8 +33,8 @@ public class FileListener extends FileAlterationListenerAdaptor {
                     JPanel panel1 = new JPanel();
                     JOptionPane.showMessageDialog(panel1,
                             "Invalid files in the current selection.\n" +
-                                    "Please upload the file with '.html', '.xls' extension for uploading the Genie data\n" +
-                                    "or with '.pdf' extension named with 'File' for uploading reports to users.",
+                                    "Please upload the file with '.html', '.xls' extension for uploading the Genie data\n" /*+
+                                    "or with '.pdf' extension named with 'File' for uploading reports to users."*/,
                             "Warn", JOptionPane.WARNING_MESSAGE);
                     GenieUI.COMMAND = null;
                     GenieUI.FILE_EXTENSION = null;
@@ -46,7 +46,7 @@ public class FileListener extends FileAlterationListenerAdaptor {
                 JOptionPane.showMessageDialog(panel2,
                         "Invalid files in the current selection.\n" +
                                 "Please upload the file named with one of the QueryCommand:\n"+
-                                "'Appointment', 'Patient', 'Doctor', 'Hospital', 'Pathology', 'Radiology','Resource', or 'File'",
+                                "'Appointment', 'Patient', 'Doctor', 'Hospital', 'Pathology', 'Radiology',or 'Resource'",
                         "Warn", JOptionPane.WARNING_MESSAGE);
                 GenieUI.COMMAND = null;
                 //pathTextArea.setText("");
@@ -85,8 +85,8 @@ public class FileListener extends FileAlterationListenerAdaptor {
             System.out.println(type);
             if (type!=null){
 
-                if ((type==QueryCommand.FILE && fileExtention.equals("pdf"))
-                        || (type!=QueryCommand.FILE && fileExtention.equals("html"))
+                if (/*(type==QueryCommand.FILE && fileExtention.equals("pdf"))
+                        ||*/ (type!=QueryCommand.FILE && fileExtention.equals("html"))
                         || (type!=QueryCommand.FILE && fileExtention.equals("xls")))
                 {
                     GenieUI.COMMAND = type;
@@ -97,8 +97,8 @@ public class FileListener extends FileAlterationListenerAdaptor {
                     JPanel panel1 = new JPanel();
                     JOptionPane.showMessageDialog(panel1,
                             "Invalid files in the current selection.\n" +
-                                    "Please upload the file with '.html', '.xls' extension for uploading the Genie data\n" +
-                                    "or with '.pdf' extension named with 'File' for uploading reports to users.",
+                                    "Please upload the file with '.html', '.xls' extension for uploading the Genie data\n" /*+
+                                    "or with '.pdf' extension named with 'File' for uploading reports to users."*/,
                             "Warn", JOptionPane.WARNING_MESSAGE);
                     GenieUI.COMMAND = null;
                     //pathTextArea.setText("");
@@ -111,7 +111,7 @@ public class FileListener extends FileAlterationListenerAdaptor {
                 JOptionPane.showMessageDialog(panel2,
                         "Invalid files in the current selection.\n" +
                                 "Please upload the file named with one of the QueryCommand:\n"+
-                                "'Appointment', 'Patient', 'Doctor', 'Hospital', 'Pathology', 'Radiology','Resource', or 'File'",
+                                "'Appointment', 'Patient', 'Doctor', 'Hospital', 'Pathology', 'Radiology',or 'Resource'",
                         "Warn", JOptionPane.WARNING_MESSAGE);
                 GenieUI.COMMAND = null;
                 GenieUI.FILE_EXTENSION = null;
