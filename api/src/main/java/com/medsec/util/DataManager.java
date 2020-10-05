@@ -6,6 +6,7 @@ import org.json.simple.JSONObject;
 import java.time.Duration;
 import java.time.Instant;
 import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 
 /**
  * DataManager that process JSON and return entity
@@ -192,8 +193,17 @@ public class DataManager {
         String id = (String) rsource.get("Id");
         String uid = (String) rsource.get("Uid");
         String name = (String) rsource.get("Name");
-        String website = (String) rsource.get("Website");
-        Resource resource = new Resource().id(id).uid(uid).name(name).website(website);
+        String content = (String) rsource.get("Content");
+        // 02/10/2020
+        String str_date = (String) rsource.get("Date");
+        //convert String to LocalDate
+        String str_date_parse[] = str_date.split("/");
+        String year = str_date_parse[2];
+        String month = str_date_parse[1];
+        String day = str_date_parse[0];
+        String new_str_date = year + "-" + month + "-" + day;
+        LocalDate date = LocalDate.parse(new_str_date);
+        Resource resource = new Resource().id(id).uid(uid).name(name).content(content).date(date);
         return resource;
     }
 }

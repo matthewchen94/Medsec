@@ -9,6 +9,7 @@
     <version>1.0-SNAPSHOT</version>
     <name>medsec</name>
 
+
     <build>
         <finalName>medsec</finalName>
         <plugins>

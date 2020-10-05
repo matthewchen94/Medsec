@@ -13,7 +13,10 @@ import java.io.File;
 import java.net.Socket;
 import java.net.SocketException;
 import java.security.KeyStore;
+import java.time.Instant;
+import java.time.LocalDate;
 import java.util.HashMap;
+import java.util.Date;
 
 /**
  * TCPServer handles JSON GENIE Data sent from the script
@@ -25,6 +28,7 @@ public class TCPServer implements Runnable{
     private static final String CLIENT_TRUST_KEY_STORE_PASSWORD = "client";
     private static final String CLIENT_KEY_PATH = "/client_ks.jks";
     private static final String TRUST_SERVER_KEY_PATH = "/serverTrust_ks.jks";
+
 
     public static String GENIE_INSTALL_PATH = "";
 
@@ -91,6 +95,7 @@ class TCPServerProcess implements Runnable{
     ServletContext sc = null;
 
 
+
     public TCPServerProcess(Socket s){
         try{
             System.out.println("Client Connected");
@@ -148,7 +153,9 @@ class TCPServerProcess implements Runnable{
         else if (command.equals(QueryCommand.RESOURCE.toString()))
             return resourceHandler((JSONObject) json.get("doc"));
         else if (command.equals(QueryCommand.FILE.toString()))
-            return fileHandler((JSONObject) json.get("doc"));
+            return fileAHandler((JSONObject) json.get("doc"));
+        else if (command.equals(QueryCommand.RESOURCEFILE.toString()))
+            return filePHandler((JSONObject) json.get("doc"));
         else if (command.equals(QueryCommand.DISCONNECTION.toString()))
             return true;
         else
@@ -298,7 +305,7 @@ class TCPServerProcess implements Runnable{
         return false;
     }
 
-    public boolean fileHandler(JSONObject file) throws IOException {
+    public boolean fileAHandler(JSONObject file) throws IOException {
         int bytesRead = 0;
         int current = 0;
         InputStream in = null;
@@ -352,6 +359,75 @@ class TCPServerProcess implements Runnable{
         } else {
             log.info("update existed file");
             db.updateFile(appointmentFile);
+        }
+
+        return false;
+
+    }
+
+
+
+    public boolean filePHandler(JSONObject Rfile) throws IOException {
+        int bytesRead = 0;
+        int current = 0;
+        InputStream in = null;
+        Database RfileDB = new Database();
+        // fetch the max RFile ID and plus 1
+        System.out.println("------------filePHandler------------");
+        int ResourceFileID = RfileDB.maxID() + 1;
+        System.out.println("ResourceFileID:"+ResourceFileID);
+        String id = String.valueOf(ResourceFileID);
+        LocalDate date = LocalDate.now();
+
+        String resoucePath=TCPServer.class.getResource("/").getPath();
+        String webappsDir=(new File(resoucePath,"../../")).getCanonicalPath();
+//        String path = TCPServer.class.getResource("\\").getPath();
+        String fileName = (String)Rfile.get("FileName"); // FileP-3.pdf
+        String uid = fileName.substring(fileName.lastIndexOf("-") + 1,
+                fileName.lastIndexOf(".")).trim();
+        String eachFilePath = "/result/" + ResourceFileID + "/" + fileName;
+        String filePath = webappsDir + eachFilePath;
+        System.out.println(eachFilePath);
+        System.out.println(filePath);
+
+        try {
+            in = connectionSocket.getInputStream();
+            File newFile = new File(filePath);
+            if (!newFile.exists()){
+                newFile.getParentFile().getParentFile().mkdir();
+                newFile.getParentFile().mkdir();
+                newFile.createNewFile();
+            }
+            DataInputStream clientData = new DataInputStream(in);
+            OutputStream output = new FileOutputStream(filePath);
+
+            long size = (long)Rfile.get("FileSize");
+            byte[] buffer = new byte[1024];
+
+
+            while (size > 0 && (bytesRead = clientData.read(buffer, 0, (int)Math.min(buffer.length, size))) != -1)
+            {
+
+                output.write(buffer, 0, bytesRead);
+                size -= bytesRead;
+            }
+            output.flush();
+            output.close();
+
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        com.medsec.entity.ResourceFile resourceFile = new com.medsec.entity.ResourceFile().id(id)
+                .uid(uid).title(fileName).date(date).link(eachFilePath);
+
+        Database db = new Database();
+        if (!isRFileExist(id)){
+            log.info("insert new file");
+            db.insertRFile(resourceFile);
+        } else {
+            log.info("update existed file");
+            db.updateRFile(resourceFile);
         }
 
         return false;
@@ -471,6 +547,12 @@ class TCPServerProcess implements Runnable{
     public boolean isFileExist(String id){
         Database db = new Database();
         com.medsec.entity.File file = db.selectFileById(id);
+        return file != null;
+    }
+
+    public boolean isRFileExist(String id){
+        Database db = new Database();
+        com.medsec.entity.ResourceFile file = db.selectRFileById(id);
         return file != null;
     }
 }

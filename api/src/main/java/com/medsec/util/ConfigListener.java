@@ -4,6 +4,7 @@ import com.medsec.base.Config;
 import com.medsec.dao.*;
 import com.medsec.entity.NotificationToken;
 import com.medsec.entity.Pathology;
+import com.medsec.entity.ResourceFile;
 import org.apache.commons.configuration2.PropertiesConfiguration;
 import org.apache.commons.configuration2.builder.fluent.Configurations;
 import org.apache.commons.dbcp2.BasicDataSourceFactory;
@@ -36,6 +37,7 @@ public class ConfigListener implements ServletContextListener{
     @Override
     public void contextInitialized(ServletContextEvent sce) {
         try {
+
             ServletContext app = sce.getServletContext();
 
             //init Log4j2
@@ -56,12 +58,17 @@ public class ConfigListener implements ServletContextListener{
             // Load database profile
             System.out.println("Init DB connection pool");
             String PROP_DBCP = Config.USE_DEV_DATABASE_PROFILE ? PROP_DBCP_DEV : PROP_DBCP_DEPLOY;
+            System.out.println("new Properties");
             Properties properties = new Properties();
+            System.out.println("load getResourceAsStream");
             properties.load(app.getResourceAsStream(PROP_DBCP));
 
             // init Database
+
             dataSource = BasicDataSourceFactory.createDataSource(properties);
+
             app.setAttribute("dataSource", dataSource);
+
 
             TransactionFactory transactionFactory = new JdbcTransactionFactory();
             Environment environment = new Environment("development", transactionFactory, dataSource);
@@ -77,12 +84,15 @@ public class ConfigListener implements ServletContextListener{
             configuration.addMapper(ResourceMapper.class);
             configuration.addMapper(NotificationTokenMapper.class);
             configuration.addMapper(FileMapper.class);
+            configuration.addMapper(ResourceFileMapper.class);
+
 
             sqlSessionFactory = new SqlSessionFactoryBuilder().build(configuration);
 
             app.setAttribute("sqlSessionFactory", sqlSessionFactory);
 
         } catch (Exception e) {
+            System.out.println("----------------configlistenerException----------------");
             e.printStackTrace();
         }
     }

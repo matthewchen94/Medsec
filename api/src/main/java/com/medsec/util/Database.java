@@ -13,11 +13,15 @@ import java.util.List;
  * This class encapsulates all database queries.
  */
 public class Database {
-    SqlSession session = ConfigListener.sqlSessionFactory.openSession();
+    // TODO: CHECK java.lang.NullPointerException
+
     boolean keepAlive = false;
+    SqlSession session = ConfigListener.sqlSessionFactory.openSession();
+
 
     public Database() {
     }
+
 
     public Database(boolean keepAlive) {
         this.keepAlive = keepAlive;
@@ -482,6 +486,63 @@ public class Database {
         }
     }
 
+    /*
+    ResourceFile
+     */
+
+    public ResourceFile selectRFileById(String id) {
+        try {
+            ResourceFileMapper mapper = session.getMapper(ResourceFileMapper.class);
+            return mapper.selectRFileById(id);
+        } finally {
+            if(!keepAlive) close();
+        }
+    }
+
+    public String getRFileLink(String id){
+        try{
+            ResourceFileMapper mapper = session.getMapper(ResourceFileMapper.class);
+            return mapper.getRFileLink(id);
+        } finally {
+            if(!keepAlive) close();
+        }
+    }
+
+    public int maxID(){
+        try{
+            ResourceFileMapper mapper = session.getMapper(ResourceFileMapper.class);
+            int maxid ;
+            if (mapper.maxID() == null){
+                maxid = 0;
+            }
+            else {
+                maxid = Integer.parseInt(mapper.maxID());
+            }
+            return maxid;
+        } finally {
+            if(!keepAlive) close();
+        }
+    }
+
+    public void insertRFile(ResourceFile file) {
+        try {
+            ResourceFileMapper mapper = session.getMapper(ResourceFileMapper.class);
+            mapper.insertRFile(file);
+            session.commit();
+        } finally {
+            if (!keepAlive) close();
+        }
+    }
+
+    public void updateRFile(ResourceFile file) {
+        try {
+            ResourceFileMapper mapper = session.getMapper(ResourceFileMapper.class);
+            mapper.updateRFile(file);
+            session.commit();
+        } finally {
+            if (!keepAlive) close();
+        }
+    }
     /*
     Notification token
      */

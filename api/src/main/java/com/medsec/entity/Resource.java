@@ -1,10 +1,14 @@
 package com.medsec.entity;
 
+import java.time.Instant;
+import java.time.LocalDate;
+
 public class Resource {
     private String id;
     private String uid;
     private String name;
-    private String website;
+    private String content;
+    private LocalDate date;
 
     public String getId() {
         return id;
@@ -30,12 +34,20 @@ public class Resource {
         this.name = name;
     }
 
-    public String getWebsite() {
-        return website;
+    public String getContent() {
+        return content;
     }
 
-    public void setWebsite(String website) {
-        this.website = website;
+    public void setContent(String content) {
+        this.content = content;
+    }
+
+    public LocalDate getDate() {
+        return date;
+    }
+
+    public void setDate(LocalDate date) {
+        this.date = date;
     }
 
     public Resource id(final String id) {
@@ -53,8 +65,13 @@ public class Resource {
         return this;
     }
 
-    public Resource website(final String website) {
-        this.website = website;
+    public Resource content(final String content) {
+        this.content = content;
+        return this;
+    }
+
+    public Resource date(final LocalDate date) {
+        this.date = date;
         return this;
     }
 }

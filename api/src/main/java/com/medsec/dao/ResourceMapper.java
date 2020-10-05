@@ -8,8 +8,7 @@ import java.util.List;
 public interface ResourceMapper {
     Resource getResourceById(String ResourceID);
 
-    List<Resource> getResourcesByUserId(
-            @Param("uid")  String uid);
+    List<Resource> getResourcesByUserId(@Param("uid")  String uid);
 
     void insertResource(Resource resource);
 

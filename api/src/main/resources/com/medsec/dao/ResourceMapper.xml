@@ -14,8 +14,8 @@
     </select>
 
     <insert id="insertResource" parameterType="com.medsec.entity.Resource">
-        INSERT INTO Resource (id, uid, name, website)
-        VALUES (#{id}, #{uid}, #{name}, #{website});
+        INSERT INTO Resource (id, uid, name, date,content)
+        VALUES (#{id}, #{uid}, #{name}, #{date},#{content});
     </insert>
 
     <delete id="deleteResource" parameterType="String">
@@ -24,8 +24,9 @@
 
     <update id="updateResource" parameterType="com.medsec.entity.Resource">
         UPDATE Resource SET
-        name= #{name},
-        website= #{website}
+        Resource.name= #{name},
+        Resource.content= #{content},
+        Resource.date= #{date}
         WHERE Resource.id= #{id}
     </update>
 </mapper>
