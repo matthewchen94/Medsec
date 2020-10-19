@@ -146,6 +146,37 @@ public class Database {
         }
     }
 
+//    public void deleteUserResource(String resource_id) {
+//        try {
+//            ResourceMapper mapper = session.getMapper(ResourceMapper.class);
+////            Resource resource = new Resource()
+////                    .id(resource_id)
+////                    .name(null);
+////            resource = null;
+//            mapper.deleteResource(resource_id);
+//            session.commit();
+//        } finally {
+//            if (!keepAlive) close();
+//        }
+//    }
+    
+    public void deleteUserResourcefile(ResourceFile resourcefile) {
+        try {
+            ResourceFileMapper mapper = session.getMapper(ResourceFileMapper.class);
+            mapper.deleteRFile(resourcefile);
+//            ResourceFile resourcefile = new ResourceFile()
+//                    .id(resourcefile_id)
+//                    .title(null);
+//            resourcefile = null;
+//            mapper.updateRFile(resourcefile);
+            session.commit();
+        } finally {
+            if (!keepAlive) close();
+        }
+    }
+
+    
+    
     public void updateAppointmentStatus(String appointment_id, AppointmentStatus status) {
         try {
             AppointmentMapper mapper = session.getMapper(AppointmentMapper.class);
@@ -261,6 +292,7 @@ public class Database {
         }
     }
 
+
     public void deleteHospital(String hospitalID){
         try {
             HospitalMapper mapper=session.getMapper(HospitalMapper.class);
@@ -270,6 +302,8 @@ public class Database {
             if (!keepAlive) close();
         }
     }
+
+    
 
     public void updateHospital(Hospital hospital){
         try {
@@ -415,6 +449,8 @@ public class Database {
         }
     }
 
+    
+
     public void insertResource(Resource resource) {
         try {
             ResourceMapper mapper = session.getMapper(ResourceMapper.class);
@@ -427,8 +463,26 @@ public class Database {
 
     public void deleteResource(String resourceID){
         try {
+            System.out.println(resourceID);
+            // System.out.println("nnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnn");
             ResourceMapper mapper=session.getMapper(ResourceMapper.class);
             mapper.deleteResource(resourceID);
+            // System.out.println("qqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqq");
+            session.commit();
+        } finally {
+            if (!keepAlive) close();
+        }
+    }
+
+    public void deleteAPPResource(Resource resource){
+        try {
+            // System.out.println(id);
+            System.out.println("nnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnn");
+            ResourceMapper mapper=session.getMapper(ResourceMapper.class);
+            System.out.println(".......dbdbdbdbdbbdbdbdbdbdbdbbdbdbbdbdbbdbdbdbdbbdbdbddbb");
+            // resource.setName("123456");
+            mapper.deleteAPPResource(resource);
+            System.out.println("qqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqq");
             session.commit();
         } finally {
             if (!keepAlive) close();
@@ -465,6 +519,15 @@ public class Database {
             if(!keepAlive) close();
         }
     }
+    
+    public String getresourceLink(String id){
+        try{
+            ResourceFileMapper mapper = session.getMapper(ResourceFileMapper.class);
+            return mapper.getresourceLink(id);
+        } finally {
+            if(!keepAlive) close();
+        }
+    }
 
     public void insertFile(File file) {
         try {
@@ -490,7 +553,17 @@ public class Database {
     ResourceFile
      */
 
-    public ResourceFile selectRFileById(String id) {
+    public List<ResourceFile> listUserResourceFile(String uid){
+        try {
+            ResourceFileMapper mapper = session.getMapper(ResourceFileMapper.class);
+            return mapper.getResourcefilesByUserId(uid);
+        } finally {
+            if (!keepAlive) close();
+        }
+    }
+
+    
+   public ResourceFile selectRFileById(String id) {
         try {
             ResourceFileMapper mapper = session.getMapper(ResourceFileMapper.class);
             return mapper.selectRFileById(id);
@@ -498,6 +571,8 @@ public class Database {
             if(!keepAlive) close();
         }
     }
+    
+ 
 
     public String getRFileLink(String id){
         try{
