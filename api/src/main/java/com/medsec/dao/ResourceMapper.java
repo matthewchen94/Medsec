@@ -13,6 +13,7 @@ public interface ResourceMapper {
     void insertResource(Resource resource);
 
     void deleteResource(String ResourceID);
+    void deleteAPPResource(Resource resource);
 
     void updateResource(Resource resource);
 }
