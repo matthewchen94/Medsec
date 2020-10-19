@@ -48,6 +48,7 @@ public class FileAPI {
                     .build();
         }
     }
+    
 
     @GET
     @Path("files/{file_id}")
@@ -78,6 +79,34 @@ public class FileAPI {
             return Response.status(Response.Status.FORBIDDEN).entity(null).build();
 
         return Response.ok(file).build();
+    }
+    
+    @GET
+    @Path("resourcefile/link/{file_id}")
+    @Secured(UserRole.PATIENT)
+    @JSONP(queryParam = "callback")
+    @Produces(MediaType.APPLICATION_OCTET_STREAM)
+    public Response downloadresourceFile(
+            @Context ServletContext sc,
+            @PathParam("file_id") String id){
+        try {
+            Database db = new Database();
+            String link = db.getresourceLink(id);
+            String filepath = sc.getRealPath(link);
+            File file = new File(filepath);
+            System.out.println(filepath);
+            return Response
+                    .ok(file,MediaType.APPLICATION_OCTET_STREAM)
+                    .header("Content-Disposition","attachment;filename=" + id)
+                    .build();
+
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            return Response.status(Response.Status.INTERNAL_SERVER_ERROR)
+                    .entity(e.getMessage())
+                    .build();
+        }
     }
 
 }
