@@ -184,9 +184,9 @@ public class GenieUI {
                     } catch (IOException e1) {
                         e1.printStackTrace();
                     }
-                    System.out.println("Resource.xls has been created");
+                    //System.out.println("Resource.xls has been created");
                 } else {
-                    System.out.println("Resource.xls already exists");
+                    //System.out.println("Resource.xls already exists");
                 }
 
                 try{
@@ -196,16 +196,35 @@ public class GenieUI {
                     LocalDate date = LocalDate.now(); // get the current date
                     DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
                     String createdate = date.format(formatter);
-                    System.out.println(createdate);
+                    //System.out.println(createdate);
                     HSSFSheet sheet=wb.getSheetAt(0);
                     HSSFRow row=sheet.getRow(0);
+                    if (sheet.getLastRowNum()==0){
+                        row=sheet.createRow((short)(sheet.getLastRowNum()+1));
+                        row.createCell(0).setCellValue(sheet.getLastRowNum());
+                        row.createCell(1).setCellValue(resource_UserID.getText());
+                        row.createCell(2).setCellValue(resource_Title.getText());
+                        row.createCell(3).setCellValue(createdate);
+                        row.createCell(4).setCellValue(resource_Messages.getText());
+                    }else{
+                        row = sheet.getRow(1);
+                        System.out.println(row.getCell(0).getNumericCellValue());
+                        double id = row.getCell(0).getNumericCellValue()+1;
+                        row.getCell(0).setCellValue(id);
+                        row.getCell(1).setCellValue(resource_UserID.getText());
+                        row.getCell(2).setCellValue(resource_Title.getText());
+                        row.getCell(3).setCellValue(createdate);
+                        row.getCell(4).setCellValue(resource_Messages.getText());
+                    }
+                    //row = sheet.getRow(0);
+
                     FileOutputStream out=new FileOutputStream(resourcePath);
-                    row=sheet.createRow((short)(sheet.getLastRowNum()+1));
-                    row.createCell(0).setCellValue(sheet.getLastRowNum());
-                    row.createCell(1).setCellValue(resource_UserID.getText());
-                    row.createCell(2).setCellValue(resource_Title.getText());
-                    row.createCell(3).setCellValue(createdate);
-                    row.createCell(4).setCellValue(resource_Messages.getText());
+                    //row=sheet.createRow((short)(sheet.getLastRowNum()+1));
+                    //row.createCell(0).setCellValue(sheet.getLastRowNum());
+                    //row.createCell(1).setCellValue(resource_UserID.getText());
+                    //row.createCell(2).setCellValue(resource_Title.getText());
+                    //row.createCell(3).setCellValue(createdate);
+                    //row.createCell(4).setCellValue(resource_Messages.getText());
                     //row.createCell(3).setCellValue(resource_Messages.getText());
                     out.flush();
                     wb.write(out);
