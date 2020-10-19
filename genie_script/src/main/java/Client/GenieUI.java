@@ -208,7 +208,7 @@ public class GenieUI {
                         row.createCell(4).setCellValue(resource_Messages.getText());
                     }else{
                         row = sheet.getRow(1);
-                        System.out.println(row.getCell(0).getNumericCellValue());
+                        //System.out.println(row.getCell(0).getNumericCellValue());
                         double id = row.getCell(0).getNumericCellValue()+1;
                         row.getCell(0).setCellValue(id);
                         row.getCell(1).setCellValue(resource_UserID.getText());
@@ -216,7 +216,6 @@ public class GenieUI {
                         row.getCell(3).setCellValue(createdate);
                         row.getCell(4).setCellValue(resource_Messages.getText());
                     }
-                    //row = sheet.getRow(0);
 
                     FileOutputStream out=new FileOutputStream(resourcePath);
                     //row=sheet.createRow((short)(sheet.getLastRowNum()+1));
