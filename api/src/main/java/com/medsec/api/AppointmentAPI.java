@@ -56,6 +56,22 @@ public class AppointmentAPI {
         return Response.ok(results).build();
     }
 
+    @GET
+    @Path("me/appointmentswithinThirtydays")
+    @Secured(UserRole.PATIENT)
+    @JSONP(queryParam = "callback")
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response listMyAppointmentsWithinThirtyDays(
+            @Context SecurityContext sc,
+            @QueryParam("since") String since,
+            @QueryParam("until") String until,
+            @QueryParam("is_confirmed") Boolean is_confirmed) {
+
+        String uid = sc.getUserPrincipal().getName();
+        List<Appointment> results = retrieveUserThirtyAppointments(uid, since, until, is_confirmed);
+
+        return Response.ok(results).build();
+    }
 
     @GET
     @Path("appointments/{appointment_id}")
@@ -150,6 +166,15 @@ public class AppointmentAPI {
         return db.listUserAppointments(uid, since, until, status);
     }
 
+    private List <Appointment> retrieveUserThirtyAppointments(String uid, String since, String until, Boolean is_confirmed) {
+
+        AppointmentStatus status = null;
+        if (is_confirmed != null)
+            status = is_confirmed ? AppointmentStatus.CONFIRMED : AppointmentStatus.UNCONFIRMED;
+
+        Database db = new Database();
+        return db.listAppointmentsWithinThirtyDays(uid, since, until, status);
+    }
 
     @Path("/appointments/{appointment_id}/usernote")
     @Produces({MediaType.APPLICATION_JSON})

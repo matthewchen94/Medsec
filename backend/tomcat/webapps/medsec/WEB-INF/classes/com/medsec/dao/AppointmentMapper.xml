@@ -34,6 +34,35 @@
         </choose>
     </select>
 
+    <select id="getThirtyDaysAppointmentsByUserId" resultType="com.medsec.entity.Appointment">
+        SELECT *
+        FROM Appointment
+        WHERE uid= #{uid}
+        AND date >= NOW()
+        AND date < NOW() + INTERVAL 1 MONTH
+        <choose>
+            <when test="since != null and until != null">
+                AND date BETWEEN #{since} AND #{until}
+            </when>
+            <when test="since != null and until == null">
+                AND date > #{since}
+            </when>
+            <when test="since == null and until != null">
+                <![CDATA[
+                AND date < #{until}
+                ]]>
+            </when>
+        </choose>
+        <choose>
+            <when test="status == null">
+                AND status != 'CANCELLED'
+            </when>
+            <otherwise>
+                AND status = #{status}
+            </otherwise>
+        </choose>
+    </select>
+
     <update id="updateUserNoteById" parameterType="com.medsec.entity.Appointment">
         UPDATE Appointment SET
           user_note= #{user_note}

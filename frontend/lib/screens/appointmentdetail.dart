@@ -11,9 +11,11 @@ import 'package:intl/intl.dart';
 import 'dart:convert';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:share/share.dart';
+import 'package:frontend/screens/appointments.dart';
 
 import 'dart:async';
 import 'dart:io';
+import 'package:url_launcher/url_launcher.dart';
 
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
@@ -260,24 +262,30 @@ class _AppointmentDetailState extends State<AppointmentDetail>
             brightness: Brightness.light,
             elevation: 0.5,
             actions: <Widget>[
-              IconButton(
-                  color: Colors.black,
-                  icon: Icon(Icons.share),
-                  onPressed: () {
-                    if (sendmsg != null) {
-                      DateTime now = new DateTime.now();
-                      Share.share(sendmsg,
-                          subject: 'Appointment details send on ' + "$now");
-                    }
-                  })
+              SizedBox(
+                  width: 56, // specific value
+                  child: FlatButton(
+                    padding: const EdgeInsets.all(5.0),
+                    onPressed: () {
+                      if (sendmsg != null) {
+                        DateTime now = new DateTime.now();
+                        Share.share(sendmsg,
+                            subject: 'Appointment details send on ' + "$now");
+                      }
+                    },
+                    child: Ink.image(
+                      image: AssetImage('assets/images/shareicon.png'),
+                    ),
+                    color: Colors.white,
+                  ))
             ],
           )),
       body: Container(
         child: (_appointmentState is Appointment) ? _detailListView() : null,
-        margin: const EdgeInsets.all(8.0),
+        margin: const EdgeInsets.all(0),
         padding: const EdgeInsets.all(8.0),
         decoration: new BoxDecoration(
-          color: Color.fromARGB(255, 196, 218, 234),
+          color: Colors.blue[50],
           borderRadius: BorderRadius.all(Radius.circular(4.0)),
         ),
       ),
@@ -313,9 +321,9 @@ class _AppointmentDetailState extends State<AppointmentDetail>
                     Text(
                       _appointmentState.title.toString(),
                       style: TextStyle(
-                        fontSize: 20.0,
+                        fontSize: 16.0,
                         fontFamily: "Arial",
-                        color: Color.fromARGB(155, 155, 155, 155),
+                        color: Colors.black,
                         height: 1.5,
                         // backgroundColor: Colors.blue,
                       ),
@@ -331,9 +339,9 @@ class _AppointmentDetailState extends State<AppointmentDetail>
                     Text(
                       "Not available",
                       style: TextStyle(
-                          fontSize: 25.0,
+                          fontSize: 16.0,
                           fontFamily: "Arial",
-                          color: Color.fromARGB(155, 155, 155, 155),
+                          color: Colors.red,
                           height: 1.5),
                       textAlign: TextAlign.left,
                     ),
@@ -363,9 +371,9 @@ class _AppointmentDetailState extends State<AppointmentDetail>
                     Text(
                       _appointmentState.detail.toString(),
                       style: TextStyle(
-                          fontSize: 20.0,
+                          fontSize: 16.0,
                           fontFamily: "Arial",
-                          color: Color.fromARGB(155, 155, 155, 155),
+                          color: Colors.black,
                           height: 1.5),
                       textAlign: TextAlign.left,
                     ),
@@ -379,9 +387,9 @@ class _AppointmentDetailState extends State<AppointmentDetail>
                     Text(
                       "Not available",
                       style: TextStyle(
-                          fontSize: 20.0,
+                          fontSize: 16.0,
                           fontFamily: "Arial",
-                          color: Color.fromARGB(155, 155, 155, 155),
+                          color: Colors.red,
                           height: 1.5),
                       textAlign: TextAlign.left,
                     ),
@@ -422,9 +430,9 @@ class _AppointmentDetailState extends State<AppointmentDetail>
                           ',  ' +
                           DateFormat.y().format(_appointmentState.date),
                       style: TextStyle(
-                          fontSize: 20.0,
+                          fontSize: 16.0,
                           fontFamily: "Arial",
-                          color: Color.fromARGB(155, 155, 155, 155),
+                          color: Colors.black,
                           height: 1.5),
                       textAlign: TextAlign.left,
                     ),
@@ -438,9 +446,9 @@ class _AppointmentDetailState extends State<AppointmentDetail>
                     Text(
                       "Not available",
                       style: TextStyle(
-                          fontSize: 20.0,
+                          fontSize: 16.0,
                           fontFamily: "Arial",
-                          color: Color.fromARGB(155, 155, 155, 155),
+                          color: Colors.red,
                           height: 1.5),
                       textAlign: TextAlign.left,
                     ),
@@ -470,9 +478,9 @@ class _AppointmentDetailState extends State<AppointmentDetail>
                     Text(
                       _appointmentState.note.toString(),
                       style: TextStyle(
-                          fontSize: 20.0,
+                          fontSize: 16.0,
                           fontFamily: "Arial",
-                          color: Color.fromARGB(155, 155, 155, 155),
+                          color: Colors.black,
                           height: 1.5),
                       textAlign: TextAlign.left,
                     ),
@@ -486,9 +494,9 @@ class _AppointmentDetailState extends State<AppointmentDetail>
                     Text(
                       "Not available",
                       style: TextStyle(
-                          fontSize: 20.0,
+                          fontSize: 16.0,
                           fontFamily: "Arial",
-                          color: Color.fromARGB(155, 155, 155, 155),
+                          color: Colors.red,
                           height: 1.5),
                       textAlign: TextAlign.left,
                     ),
@@ -517,9 +525,9 @@ class _AppointmentDetailState extends State<AppointmentDetail>
               Text(
                 "66 Darebin St, Heidelberg VIC 3084",
                 style: TextStyle(
-                    fontSize: 20.0,
+                    fontSize: 16.0,
                     fontFamily: "Arial",
-                    color: Color.fromARGB(155, 155, 155, 155),
+                    color: Colors.black,
                     height: 1.5),
                 textAlign: TextAlign.left,
               ),
@@ -551,10 +559,10 @@ class _AppointmentDetailState extends State<AppointmentDetail>
                         child: Text(
                           pdfTitle,
                           style: TextStyle(
-                              fontSize: 20.0,
+                              fontSize: 16.0,
                               fontFamily: "Arial",
                               decoration: TextDecoration.underline,
-                              color: Color.fromARGB(155, 155, 155, 155),
+                              color: Colors.black,
                               height: 1.5),
                         ),
                         onTap: () {
@@ -568,9 +576,9 @@ class _AppointmentDetailState extends State<AppointmentDetail>
                     : Text(
                         "No avaliable pdf file at present",
                         style: TextStyle(
-                            fontSize: 20.0,
+                            fontSize: 16.0,
                             fontFamily: "Arial",
-                            color: Color.fromARGB(155, 155, 155, 155),
+                            color: Colors.red,
                             height: 1.5),
                       ),
               ),
@@ -599,7 +607,7 @@ class _AppointmentDetailState extends State<AppointmentDetail>
             children: <Widget>[
               Container(
                   padding: EdgeInsets.all(20.0),
-                  color: Colors.white,
+                  color: Colors.yellow[50],
                   child: (_appointmentState.userNote == null)
                       ? Column(children: <Widget>[
                           TextField(
@@ -619,9 +627,9 @@ class _AppointmentDetailState extends State<AppointmentDetail>
                           ? Column(children: <Widget>[
                               Text(_appointmentState.userNote.toString(),
                                   style: TextStyle(
-                                      fontSize: 20.0,
+                                      fontSize: 16.0,
                                       fontFamily: "Arial",
-                                      color: Color.fromARGB(155, 155, 155, 155),
+                                      color: Colors.black,
                                       height: 1.5)),
                               Row(
                                 mainAxisAlignment:
@@ -685,64 +693,130 @@ class _AppointmentDetailState extends State<AppointmentDetail>
           ),
           _appointmentState.status != null
               ? Wrap(
-                  spacing: 4.0,
-                  runSpacing: 4.0,
+                  spacing: 10.0,
+                  runSpacing: 6.0,
                   alignment: WrapAlignment.start,
                   children: <Widget>[
                     Container(
-                        child: (_appointmentState.status.toString() ==
-                                "CONFIRMED")
-                            ? Text(
-                                _appointmentState.status.toString(),
-                                style: TextStyle(
-                                    fontSize: 20.0,
-                                    fontFamily: "Arial",
-                                    color: Color.fromARGB(155, 155, 155, 155),
-                                    height: 1.5),
-                                textAlign: TextAlign.left,
-                              )
-                            : Row(
-                                mainAxisAlignment:
-                                    MainAxisAlignment.spaceBetween,
-                                children: <Widget>[
-                                  Container(
-                                      color: Colors.white,
-                                      child: Text(
+                        child:
+                            (_appointmentState.status.toString() == "CONFIRMED")
+                                ? Text(
+                                    _appointmentState.status.toString(),
+                                    style: TextStyle(
+                                        fontSize: 20.0,
+                                        fontFamily: "Arial",
+                                        color: Colors.black,
+                                        height: 1.5),
+                                    textAlign: TextAlign.left,
+                                  )
+                                : Row(
+                                    mainAxisAlignment:
+                                        MainAxisAlignment.spaceBetween,
+                                    children: <Widget>[
+                                      Container(
+                                          child: Text(
                                         _appointmentState.status.toString(),
                                         style: TextStyle(
-                                            fontSize: 20.0,
+                                            fontSize: 18.0,
                                             fontFamily: "Arial",
-                                            color: Color.fromARGB(
-                                                155, 155, 155, 155),
+                                            color: Colors.red,
                                             height: 1.5),
                                         textAlign: TextAlign.left,
                                       )),
-                                  RaisedButton(
-                                      textColor: Colors.white,
-                                      color: Color.fromARGB(255, 135, 193, 218),
-                                      onPressed: _confirm,
-                                      child: Text('CONFIRM')),
-                                ],
-                              ))
+                                      RaisedButton(
+                                          shape: RoundedRectangleBorder(
+                                              borderRadius:
+                                                  BorderRadius.circular(18.0),
+                                              side: BorderSide(
+                                                  color: Colors.green[300])),
+                                          color: Colors.green[300],
+                                          onPressed: _confirm,
+                                          padding: EdgeInsets.symmetric(
+                                              vertical: 15, horizontal: 25),
+                                          child: Text(
+                                            "CONFIRM",
+                                            style: TextStyle(
+                                                fontSize: 20.0,
+                                                fontFamily: "Arial",
+                                                color: Colors.white,
+                                                height: 1.5),
+                                            textAlign: TextAlign.right,
+                                          )),
+                                    ],
+                                  ))
                   ],
                 )
               : Wrap(
-                  spacing: 4.0,
-                  runSpacing: 4.0,
+                  spacing: 10.0,
+                  runSpacing: 6.0,
                   alignment: WrapAlignment.start,
                   children: <Widget>[
                     Text(
                       "Not available",
                       style: TextStyle(
-                          fontSize: 20.0,
+                          fontSize: 16.0,
                           fontFamily: "Arial",
-                          color: Color.fromARGB(155, 155, 155, 155),
+                          color: Colors.red,
                           height: 1.5),
                       textAlign: TextAlign.left,
                     ),
                   ],
                 ),
+          Column(
+            children: <Widget>[
+              SizedBox(height: 20),
+              RaisedButton(
+                shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(18.0),
+                    side: BorderSide(color: Colors.white)),
+                onPressed: () {
+                  createAlertDialog1(context);
+                },
+                child: Ink.image(
+                  image: AssetImage('assets/images/changeicon.png'),
+                  height: 60,
+                ),
+                color: Colors.white,
+              )
+            ],
+          )
         ]);
+  }
+
+  createAlertDialog1(BuildContext context) {
+    return showDialog<void>(
+      context: context,
+      // false = user must tap button, true = tap outside dialog
+      builder: (BuildContext dialogContext) {
+        return AlertDialog(
+          title: Center(
+            child: Text('Want to Change Appointment?',
+                style: TextStyle(color: Colors.black, fontSize: 20)),
+          ),
+          content: Container(
+              height: 40.0,
+              padding: EdgeInsets.symmetric(horizontal: 20.0),
+              child: Column(
+                children: <Widget>[
+                  Text('Please contact our clinic'),
+                  Text('Ph: 0415181703'),
+                ],
+              )),
+          actions: <Widget>[
+            FlatButton(
+              child: Text('Cancel'),
+              onPressed: () {
+                Navigator.of(dialogContext).pop(); // Dismiss alert dialog
+              },
+            ),
+            FlatButton(
+              child: Text('Call'),
+              onPressed: () => launch("tel://0415181703"),
+            ),
+          ],
+        );
+      },
+    );
   }
 
   _save() async {
@@ -885,7 +959,7 @@ class _AppointmentDetailState extends State<AppointmentDetail>
                 builder: (context) => AlertDialog(
                     title: Text("Confirmed!"),
                     content: Text(
-                        "Please also contact the clinic to confirm the appointment.\n")));
+                        "Confirmation received! For any further changes please press change button.")));
             getAppointmentDetails();
           });
         }
@@ -895,5 +969,3 @@ class _AppointmentDetailState extends State<AppointmentDetail>
     }
   }
 }
-
-

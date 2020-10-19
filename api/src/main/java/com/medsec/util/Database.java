@@ -109,6 +109,19 @@ public class Database {
         }
     }
 
+    public List<Appointment> listAppointmentsWithinThirtyDays(
+        String uid,
+        @Nullable String since,
+        @Nullable String until,
+        @Nullable AppointmentStatus status){
+    try {
+        AppointmentMapper mapper = session.getMapper(AppointmentMapper.class);
+        return mapper.getThirtyDaysAppointmentsByUserId(uid, since, until, status);
+    } finally {
+        if (!keepAlive) close();
+    }
+}
+
     public Appointment getAppointment(String appointment_id) {
         try {
             AppointmentMapper mapper = session.getMapper(AppointmentMapper.class);

@@ -7,6 +7,7 @@ public class AuthenticationException extends Exception {
 
     public static final String REGISTRATION_NOT_MATCH = "Registered information does not match.";
     public static final String USER_ALREADY_ACTIVATED = "User is already activated.";
+    public static final String EMAIL_NOT_MATCH = "Email address does not match.";
 
     public AuthenticationException() {
         super(BAD_CREDENTIALS);

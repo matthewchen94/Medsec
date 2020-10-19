@@ -7,6 +7,8 @@ import 'package:frontend/components/appointment.dart';
 import 'package:frontend/screens/appointmentdetail.dart';
 import 'dart:convert';
 import 'package:intl/intl.dart';
+import 'package:frontend/main.dart';
+import 'package:frontend/screens/appointmentlist.dart';
 
 class Appointments extends StatefulWidget {
   @override
@@ -15,30 +17,24 @@ class Appointments extends StatefulWidget {
 
 class _AppointmentsState extends State<Appointments>
     with TickerProviderStateMixin {
-
   var _calendarController;
   Map<DateTime, List> _events;
-  List _selectedEvents;
+  List<Appointment> _samemonthevents = List<Appointment>();
   AnimationController _animationController;
-  int _flag = 0;
-  Map<DateTime, Appointment> _eventsCheck;
+  DateTime current = DateTime.now();
 
   @override
   void initState() {
     super.initState();
     _events = Map<DateTime, List>();
-    final _selectedDay = DateTime.now();
     _calendarController = CalendarController();
-    _eventsCheck = Map<DateTime, Appointment>();
-
     getAppointments();
+    getSameMonthAppointments();
     _animationController = AnimationController(
       vsync: this,
       duration: const Duration(milliseconds: 400),
     );
-
     _animationController.forward();
-    _selectedEvents = _events[_selectedDay] ?? [];
   }
 
   @override
@@ -91,16 +87,37 @@ class _AppointmentsState extends State<Appointments>
     }
   }
 
-  void _onDaySelected(DateTime day, List events) {
-    print('CALLBACK: _onDaySelected');
-    setState(() {
-      _selectedEvents = events;
-    });
+  getSameMonthAppointments() async {
+    String currentToken = await Authentication.getCurrentToken();
+    print(currentToken);
+    if (currentToken == null) {
+      print('bouncing');
+      Authentication.bounceUser(context);
+    } else {
+      String auth = "Bearer " + currentToken;
+      String url = ServerDetails.ip +
+          ':' +
+          ServerDetails.port +
+          ServerDetails.api +
+          'me/appointments';
+      print(url);
+      Map<String, String> headers = {"Authorization": auth};
+      print(headers);
+      var jsonResponse = null;
+      var response = await http.get(url, headers: headers);
+      print(response.body);
+      if (response.statusCode == 200) {
+        _samemonthevents = appointmentFromJson(response.body);
+      }
+    }
   }
 
   void _onVisibleDaysChanged(
       DateTime first, DateTime last, CalendarFormat format) {
-    print('CALLBACK: _onVisibleDaysChanged');
+    setState(() {
+      current = first;
+    });
+    print('CALLBACK: _onVisibleDaysChanged first ${first.toIso8601String()}');
   }
 
   @override
@@ -109,54 +126,51 @@ class _AppointmentsState extends State<Appointments>
         appBar: PreferredSize(
           preferredSize: Size.fromHeight(60.0),
           child: AppBar(
-              leading: BackButton(color: Colors.black),
-              centerTitle: true,
-              title: Text("Appointment",
-                  style:TextStyle(color: Colors.black
-            )
-          ),
+            leading: IconButton(
+                icon: Icon(Icons.arrow_back),
+                color: Colors.black,
+                onPressed: () {
+                  setState(() {});
+                  /* Navigator.push(context,
+                      MaterialPageRoute(builder: (context) => MainPage()));*/
+                }),
+            centerTitle: true,
+            title: Text("Appointment", style: TextStyle(color: Colors.black)),
             backgroundColor: Colors.white,
             brightness: Brightness.light,
+            automaticallyImplyLeading: false,
 //          backgroundColor: Color(0x44000000),
             elevation: 0.5,
+            actions: <Widget>[
+              SizedBox(
+                  width: 50, // specific value
+                  child: FlatButton(
+                    padding: const EdgeInsets.all(5.0),
+                    onPressed: () {
+                      setState(() {});
+                      Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                              builder: (context) => AppointmentList()));
+                    },
+                    child: Ink.image(
+                      image: AssetImage('assets/images/list.png'),
+                    ),
+                    color: Colors.white,
+                  ))
+            ],
           ),
         ),
-        body: new Builder(
-          builder:(BuildContext context){
-            return new Column(children: <Widget>[
-              _buildTableCalendarWithBuilders(),
-              const SizedBox(height: 8.0),
-              const SizedBox(height: 8.0),
-              //_buildEventList()
-              Expanded(child: _buildEventList())
-            ]);
-          })
-    );
-  }
-
-  Widget _buildTableCalendar() {
-    return TableCalendar(
-      calendarController: _calendarController,
-      events: _events,
-      //holidays: _holidays,
-      startingDayOfWeek: StartingDayOfWeek.monday,
-      calendarStyle: CalendarStyle(
-        selectedColor: Colors.purple[400],
-        todayColor: Colors.red[200],
-        markersColor: Colors.red[700],
-        outsideDaysVisible: false,
-      ),
-      headerStyle: HeaderStyle(
-        formatButtonTextStyle:
-            TextStyle().copyWith(color: Colors.white, fontSize: 15.0),
-        formatButtonDecoration: BoxDecoration(
-          color: Colors.deepOrange[400],
-          borderRadius: BorderRadius.circular(16.0),
-        ),
-      ),
-      onDaySelected: _onDaySelected,
-      onVisibleDaysChanged: _onVisibleDaysChanged,
-    );
+        body: Builder(builder: (BuildContext context) {
+          return Column(children: <Widget>[
+            _buildTableCalendarWithBuilders(),
+            const SizedBox(height: 8.0),
+            const SizedBox(height: 8.0),
+            //_buildEventList()
+            //_buildsameMonthEventList()
+            Expanded(child: _buildsameMonthEventList()),
+          ]);
+        }));
   }
 
   // More advanced TableCalendar configuration (using Builders & Styles)
@@ -188,13 +202,17 @@ class _AppointmentsState extends State<Appointments>
             opacity: Tween(begin: 0.0, end: 1.0).animate(_animationController),
             child: Container(
               margin: const EdgeInsets.all(4.0),
-              padding: const EdgeInsets.only(top: 5.0, left: 6.0),
-              color: Colors.purple[300],
-              width: 100,
-              height: 100,
+              alignment: Alignment.center,
+              decoration: BoxDecoration(
+                  color: Colors.blue[300],
+                  borderRadius: BorderRadius.circular(36.0),
+                  border: Border.all(width: 2, color: Colors.blue[300])),
               child: Text(
                 '${date.day}',
-                style: TextStyle().copyWith(fontSize: 16.0),
+                style: TextStyle().copyWith(
+                    fontSize: 20.0,
+                    color: Colors.black,
+                    fontWeight: FontWeight.bold),
               ),
             ),
           );
@@ -202,13 +220,17 @@ class _AppointmentsState extends State<Appointments>
         todayDayBuilder: (context, date, _) {
           return Container(
             margin: const EdgeInsets.all(4.0),
-            padding: const EdgeInsets.only(top: 5.0, left: 6.0),
-            color: Colors.blue[200],
-            width: 100,
-            height: 100,
+            alignment: Alignment.center,
+            decoration: BoxDecoration(
+                color: Colors.red,
+                borderRadius: BorderRadius.circular(36.0),
+                border: Border.all(width: 2, color: Colors.white)),
             child: Text(
               '${date.day}',
-              style: TextStyle().copyWith(fontSize: 16.0),
+              style: TextStyle().copyWith(
+                  fontSize: 20.0,
+                  color: Colors.black,
+                  fontWeight: FontWeight.bold),
             ),
           );
         },
@@ -218,8 +240,6 @@ class _AppointmentsState extends State<Appointments>
           if (events.isNotEmpty) {
             children.add(
               Positioned(
-                right: 1,
-                bottom: 1,
                 child: _buildEventsMarker(date, events),
               ),
             );
@@ -238,10 +258,6 @@ class _AppointmentsState extends State<Appointments>
           return children;
         },
       ),
-      onDaySelected: (date, events) {
-        _onDaySelected(date, events);
-        _animationController.forward(from: 0.0);
-      },
       onVisibleDaysChanged: _onVisibleDaysChanged,
     );
   }
@@ -249,25 +265,11 @@ class _AppointmentsState extends State<Appointments>
   Widget _buildEventsMarker(DateTime date, List events) {
     return AnimatedContainer(
       duration: const Duration(milliseconds: 300),
+      margin: const EdgeInsets.all(4.0),
+      alignment: Alignment.center,
       decoration: BoxDecoration(
-        shape: BoxShape.rectangle,
-        color: _calendarController.isSelected(date)
-            ? Colors.purple[500]
-            : _calendarController.isToday(date)
-                ? Colors.brown[300]
-                : Colors.red[400],
-      ),
-      width: 16.0,
-      height: 16.0,
-      child: Center(
-        child: Text(
-          '${events.length}',
-          style: TextStyle().copyWith(
-            color: Colors.white,
-            fontSize: 12.0,
-          ),
-        ),
-      ),
+          borderRadius: BorderRadius.circular(36.0),
+          border: Border.all(width: 2, color: Colors.blue[300])),
     );
   }
 
@@ -279,76 +281,80 @@ class _AppointmentsState extends State<Appointments>
     );
   }
 
-  Widget _buildEventList() {
-    return ListView(
-      children: _selectedEvents
-          .map((event) => Container(
-              decoration: BoxDecoration(
-                border: Border.all(width: 0.8),
-                borderRadius: BorderRadius.circular(12.0),
-                //color:event.status=='UNCONFIRMED' ? Colors.blueGrey:null,
-              ),
-              margin:
-                  const EdgeInsets.symmetric(horizontal: 8.0, vertical: 4.0),
-              child: (event is Appointment)
-                  ? ListTile(
-                      leading:Column(
-                          children:<Widget>[
-                            //Show Weekday, Month and day of Appiontment
-                            Text(DateFormat('EE').format(event.date) + '  '+ DateFormat.MMMd().format(event.date),
-                                style: TextStyle(color: Colors.blue.withOpacity(1.0),
-                                                  fontWeight: FontWeight.bold,)),
-                            //Show Start Time of Appointment
-                            Text(DateFormat.jm().format(event.date),
-                                textAlign: TextAlign.center,
-                                overflow: TextOverflow.ellipsis,
-                                style: TextStyle(fontWeight: FontWeight.bold,
-                                                  height: 1.5,)),
-                            //Show End Time of Appointment
-                            Text(DateFormat.jm().format(event.date.add(Duration(minutes: event.duration ?? 0))),
-                                style: TextStyle(color: Colors.black.withOpacity(0.6)),),
-                          ]
-                      ),//Text(DateFormat.Hm().format(event.date)),//DateFormat.Hm().format(now)
-                      title: Text(event.title),
-                      trailing: event.status=='UNCONFIRMED' ?
-                        Column(
-                            children:<Widget>[
-                              //event.status=='CONFIRMED' ?
-                              Icon(
-                                  Icons.error,
-                                  color:Colors.pink,
-                                  //size:25.0,
-                                  semanticLabel: 'Unconfirmed Appointment'),//:Container(width:0,height:0),
-                              Icon(Icons.arrow_right),
-                            ]):Icon(Icons.arrow_right),
-                      //event.status=='UNCONFIRMED' ? Icon(Icons.arrow_right):null,
-                      onTap: () {
-                        setState((){
-                          //if(_eventsCheck[event.date]==null){
-                            //_flag = 1;
-                            //_eventsCheck[event.date] = List()..add(event);
-                          //}else{
-                          //if(event.date!=null) {
-                         // _eventsCheck.addEntries();
-                            //event == _eventsCheck[event.date]
-                              //  ? _flag = 0
-                              //  : _flag = 1;
-                            //_eventsCheck = event;
-                            //_eventsCheck[event.date].add(event);
-                            //}
-                          //}
-                          //event.title == _eventsCheck[event.date].title
-                        });
-                        Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                                builder: (context) =>
-                                    AppointmentDetail(event)));
-                      },
-                      //onTap: () => print('$event tapped!'),
-                    )
-                  : null))
-          .toList(),
-    );
+  Widget _buildsameMonthEventList() {
+    var _samemontheventsFilter = _samemonthevents.where((element) =>
+        element.date.year == current.year &&
+        element.date.month == current.month);
+
+    return Scaffold(
+        body: (_samemontheventsFilter.length == 0)
+            ? Text("No appointment record in current month!",
+                textAlign: TextAlign.center,
+                style: TextStyle(color: Colors.pink, fontSize: 16))
+            : ListView(
+                children: _samemontheventsFilter
+                    .map((event) => Container(
+                        decoration: BoxDecoration(
+                          border: Border.all(width: 0.8),
+                          borderRadius: BorderRadius.circular(12.0),
+                        ),
+                        margin: const EdgeInsets.symmetric(
+                            horizontal: 8.0, vertical: 4.0),
+                        child: (event is Appointment)
+                            ? ListTile(
+                                leading: SizedBox(
+                                  width: 90,
+                                  child: Column(children: <Widget>[
+                                    //Show Weekday, Month and day of Appiontment
+                                    Text(
+                                        DateFormat('EE').format(event.date) +
+                                            '  ' +
+                                            DateFormat.MMMd()
+                                                .format(event.date),
+                                        style: TextStyle(
+                                          color: Colors.blue.withOpacity(1.0),
+                                          fontWeight: FontWeight.bold,
+                                        )),
+                                    //Show Start Time of Appointment
+                                    Text(DateFormat.jm().format(event.date),
+                                        textAlign: TextAlign.center,
+                                        overflow: TextOverflow.ellipsis,
+                                        style: TextStyle(
+                                          fontWeight: FontWeight.bold,
+                                          height: 1.5,
+                                        )),
+                                    //Show End Time of Appointment
+                                    Text(
+                                      DateFormat.jm().format(event.date.add(
+                                          Duration(
+                                              minutes: event.duration ?? 0))),
+                                      style: TextStyle(
+                                          color: Colors.black.withOpacity(0.6)),
+                                    ),
+                                  ]),
+                                ), //Text(DateFormat.Hm().format(event.date)),//DateFormat.Hm().format(now)
+                                title: Text(event.title),
+                                trailing: event.status == 'UNCONFIRMED'
+                                    ? Column(children: <Widget>[
+                                        //event.status=='CONFIRMED' ?
+                                        Icon(Icons.error,
+                                            color: Colors.pink,
+                                            //size:25.0,
+                                            semanticLabel:
+                                                'Unconfirmed Appointment'), //:Container(width:0,height:0),
+                                        Icon(Icons.arrow_right),
+                                      ])
+                                    : Icon(Icons.arrow_right),
+                                onTap: () {
+                                  setState(() {});
+                                  /* Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                            builder: (context) =>
+                                AppointmentDetail(event)));*/
+                                },
+                              )
+                            : null))
+                    .toList()));
   }
 }

@@ -66,6 +66,50 @@ public class UserAPI {
     }
 
 
+    @POST
+	@Path("user/emailgetpassword")
+	@Consumes(MediaType.APPLICATION_JSON)
+	@Produces(MediaType.APPLICATION_JSON)
+	public Response emailGetPassword(User requestUser) {
+
+        // Verify user with registered information.
+        try {
+
+            User user = verifyUserEmail(requestUser);
+
+            // Now the user is ready to be activated.
+            // Set new password
+            user.getPassword();
+            // Update database
+
+            return Response.ok(new DefaultRespondEntity()).build();
+
+        } catch (ArgumentException e) {
+            // Invalid input
+            return Response
+                    .status(Response.Status.BAD_REQUEST)
+                    //.entity(new DefaultRespondEntity(e.getMessage()))
+                    .entity(new DefaultRespondEntity("Invalid input"))
+                    .build();
+
+        } catch (AuthenticationException e) {
+            // Registered info not match
+            return Response
+                    .status(Response.Status.NOT_FOUND)
+                    //.entity(new DefaultRespondEntity("Registered info did not match"))
+                    .entity(new DefaultRespondEntity(e.getMessage()))
+                    .build();
+
+        } catch (Exception e) {
+            // User has been activated
+            return Response
+                    .status(Response.Status.FORBIDDEN)
+                    //.entity(new DefaultRespondEntity("Catch all"))
+                    .entity(new DefaultRespondEntity(e.getStackTrace().toString()))
+                    .build();
+        }
+    }
+
     @PUT
     @Path("user/password")
     @Consumes(MediaType.APPLICATION_JSON)
@@ -100,6 +144,7 @@ public class UserAPI {
 
         }
     }
+
     @POST
     @Path("user/cal")
     @Consumes(MediaType.APPLICATION_JSON)
@@ -130,6 +175,31 @@ public class UserAPI {
         if (user.getPassword() != null)
             throw new Exception("User has been activated");
 
+        return user;
+
+    }
+
+    @POST
+    @Path("user/del")
+    @Consumes(MediaType.APPLICATION_JSON)
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response checkCallum(Callum c) {
+
+        return Response.ok(LocalDate.now()).build();
+    }
+
+
+    private User verifyUserEmail(User u) throws ArgumentException, AuthenticationException, Exception {
+
+        if (u.getEmail() == null)
+            throw new ArgumentException();
+
+        Database db = new Database();
+        User user = db.getUserByEmail(u.getEmail().toLowerCase());
+
+        if (user == null) {
+            throw new AuthenticationException(AuthenticationException.EMAIL_NOT_MATCH);
+        }
         return user;
 
     }
