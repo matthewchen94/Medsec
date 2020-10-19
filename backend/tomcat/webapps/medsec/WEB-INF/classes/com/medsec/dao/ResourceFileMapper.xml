@@ -3,8 +3,19 @@
         PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.medsec.dao.ResourceFileMapper">
+    
     <select id="selectRFileById" parameterType="String" resultType="com.medsec.entity.ResourceFile">
         SELECT * FROM ResourceFile WHERE id=#{id}
+    </select>
+
+    <select id="getResourcefilesByUserId" resultType="com.medsec.entity.ResourceFile">
+        SELECT *
+        FROM ResourceFile
+        WHERE ResourceFile.uid= #{uid}
+    </select>
+
+    <select id="getresourceLink" parameterType="String" resultType="String">
+        SELECT link FROM ResourceFile WHERE id=#{id}
     </select>
 
     <select id="getRFileLink" parameterType="String" resultType="String">
@@ -28,4 +39,10 @@
         ResourceFile.date=#{date}
         where ResourceFile.id=#{id}
     </update>
+
+    <delete id="deleteRFile" parameterType="com.medsec.entity.ResourceFile">
+        DELETE FROM ResourceFile where ResourceFile.id=#{id};
+    </delete>
+
+   
 </mapper>

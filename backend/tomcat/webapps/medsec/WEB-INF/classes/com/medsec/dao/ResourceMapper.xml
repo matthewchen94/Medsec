@@ -22,6 +22,7 @@
         delete from Resource where Resource.id=#{id}
     </delete>
 
+
     <update id="updateResource" parameterType="com.medsec.entity.Resource">
         UPDATE Resource SET
         Resource.name= #{name},
@@ -29,4 +30,17 @@
         Resource.date= #{date}
         WHERE Resource.id= #{id}
     </update>
+
+    <!-- <update id="deleteAPPResource" parameterType="com.medsec.entity.Resource">
+        UPDATE Resource SET
+        Resource.name= #{name},
+        Resource.content= #{content},
+        Resource.date= #{date}
+        WHERE Resource.id= #{id}
+    </update> -->
+
+    <delete id="deleteAPPResource" parameterType="com.medsec.entity.Resource">
+        delete from Resource where Resource.id=#{id}
+    </delete>
+     
 </mapper>
