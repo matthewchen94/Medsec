@@ -33,20 +33,27 @@ class _resourcedetailState extends State<resourcedetail> {
 //            backgroundColor: Colors.transparent,
             elevation: 0.5,
             actions: <Widget>[
-              IconButton(
-                  color: Colors.black,
-                  icon: Icon(Icons.share),
-                  onPressed: () {
-                    if (_resourceState.website != null) {
-                      DateTime now = new DateTime.now();
-                      Share.share(
-                          _resourceState.website +
-                              '\n' +
-                              '\n' +
-                              "From Medical Secretary App",
-                          subject: _resourceState.name);
-                    }
-                  })
+              SizedBox(
+                  width: 56, // specific value
+                  child: FlatButton(
+                    padding: const EdgeInsets.all(5.0),
+                    onPressed: () {
+                      if (_resourceState.website != null) {
+                        DateTime now = new DateTime.now();
+                        Share.share(
+                            _resourceState.website +
+                                '\n' +
+                                '\n' +
+                                "From Medical Secretary App",
+                            subject: _resourceState.name);
+                      }
+                    },
+                    child: Ink.image(
+                      image: AssetImage('assets/images/shareicon.png'),
+                    ),
+                    // color: Colors.white,
+                  ))
+              
             ],
           )),
       body: new Builder(builder: (BuildContext context) {
@@ -81,7 +88,7 @@ class _resourcedetailState extends State<resourcedetail> {
                         title: Text(url.toString(),
                             style:
                                 TextStyle(fontSize: 17.5, fontFamily: "Arial")),
-                        trailing: url.startsWith("https://")
+                        trailing: url.startsWith("http")
                             ? Icon(
                                 Icons.public,
                               )
