@@ -26,16 +26,16 @@ import java.time.format.DateTimeFormatter;
 
 public class GenieUI {
     private static int PORT = 11111;
-    private static String IP = "13.58.243.191";
+    private static String IP = "18.189.189.7";
     public static String FileMonitorPATH="Please choose a directory as a Genie file";
-    public static boolean monitorThread = false;//update 20/09/2020
+    public static boolean monitorThread = false;
+    public static String PDFfilename;
     private static long prevTime;
     // 30 mins delay for update
     private static long DELAY_UPDATE = 12 * 60 * 60 * 1000;
 
     private static final Path PATH = Paths.get
             ("src/main/resources/").toAbsolutePath();
-    //private static final String GENIE_DB_NAME = "TestData/user.json";
     private static final String CLIENT_KEY_STORE_PASSWORD = "client";
     private static final String CLIENT_TRUST_KEY_STORE_PASSWORD = "client";
     private static final String CLIENT_KEY_PATH = "/client_ks.jks";
@@ -51,18 +51,16 @@ public class GenieUI {
     private JPanel panelMain;
     private JTextField ipField;
     private JTextField portField;
-    private JTextField monitorPath; //update 20/09/2020
+    private JTextField monitorPath;
     private JButton updateIPButton;
-    private JButton updateMonitorButton;   //update 20/09/2020
+    private JButton updateMonitorButton;
 
 
-    // update 20/09/2020
     private JButton choosePath;
     private JTextField pdfPath;
     private JButton Pdf_path_Button;
 
-    //    waiting to be finished in Sprint2
-    private JButton sendUpdateButton; // has to change to be a resource.xls modify button
+    private JButton sendUpdateButton;
     private JTextField resource_UserID;
     private JTextField resource_Title;
     private JComboBox selectPurpose;
@@ -118,7 +116,7 @@ public class GenieUI {
             }
         });
 
-        //Update monitor file path button  20/09/2020
+        //Update monitor file path button
         updateMonitorButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -173,7 +171,6 @@ public class GenieUI {
                     cell = row.createCell(2);
                     cell.setCellValue("Name");
                     cell = row.createCell(3);
-                    //cell.setCellValue("Website");
                     cell.setCellValue("Date");
                     cell = row.createCell(4);
                     cell.setCellValue("Content");
@@ -208,7 +205,7 @@ public class GenieUI {
                         row.createCell(4).setCellValue(resource_Messages.getText());
                     }else{
                         row = sheet.getRow(1);
-                        //System.out.println(row.getCell(0).getNumericCellValue());
+                        System.out.println(row.getCell(0).getNumericCellValue());
                         double id = row.getCell(0).getNumericCellValue()+1;
                         row.getCell(0).setCellValue(id);
                         row.getCell(1).setCellValue(resource_UserID.getText());
@@ -216,6 +213,7 @@ public class GenieUI {
                         row.getCell(3).setCellValue(createdate);
                         row.getCell(4).setCellValue(resource_Messages.getText());
                     }
+                    //row = sheet.getRow(0);
 
                     FileOutputStream out=new FileOutputStream(resourcePath);
                     //row=sheet.createRow((short)(sheet.getLastRowNum()+1));
@@ -241,6 +239,7 @@ public class GenieUI {
                 try {
                     File pdfFile = new File(FILE_UPLOAD_PATH);
                     String fileName = pdfFile.getName();
+                    PDFfilename = fileName;
                     String fileExtention = fileName.substring(fileName.lastIndexOf(".") + 1).trim();
                     if (selectPurpose.getSelectedItem().toString().equals("For Appointment")){
                         if (fileExtention.equals("pdf")){
@@ -274,7 +273,7 @@ public class GenieUI {
                         }
                     }
                     if (COMMAND != null) {
-                        System.out.println("Send Update");
+                        //System.out.println("Send Update");
                         try {
                             Socket clientSocket = GenieUI.initSSLSocket();
                             TCPClient tcpClient = new TCPClient(clientSocket);
