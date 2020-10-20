@@ -1,3 +1,8 @@
+//
+// Source code recreated from a .class file by IntelliJ IDEA
+// (powered by Fernflower decompiler)
+//
+
 package com.medsec.api;
 
 import com.medsec.entity.Callum;
@@ -7,141 +12,153 @@ import com.medsec.util.ArgumentException;
 import com.medsec.util.AuthenticationException;
 import com.medsec.util.Database;
 import com.medsec.util.DefaultRespondEntity;
-
-import javax.ws.rs.*;
-import javax.ws.rs.core.MediaType;
-import javax.ws.rs.core.Response;
-import java.time.Instant;
 import java.time.LocalDate;
+import java.util.Date;
+import java.util.Properties;
+import javax.mail.Session;
+import javax.mail.Transport;
+import javax.mail.internet.InternetAddress;
+import javax.mail.internet.MimeMessage;
+import javax.mail.internet.MimeMessage.RecipientType;
+import javax.ws.rs.Consumes;
+import javax.ws.rs.GET;
+import javax.ws.rs.POST;
+import javax.ws.rs.PUT;
+import javax.ws.rs.Path;
+import javax.ws.rs.PathParam;
+import javax.ws.rs.Produces;
+import javax.ws.rs.core.Response;
+import javax.ws.rs.core.Response.Status;
 
-/**
- * RESTful APIs for User Account.
- */
 @Path("/")
 public class UserAPI {
-
-	@POST
-	@Path("user/activate")
-	@Consumes(MediaType.APPLICATION_JSON)
-	@Produces(MediaType.APPLICATION_JSON)
-	public Response activateUser(User requestUser) {
-
-        // Verify user with registered information.
-        try {
-
-            User user = verifyUserInformation(requestUser);
-
-            // Now the user is ready to be activated.
-            // Set new password
-            user.password(requestUser.getPassword());
-            // Update database
-            updateUserPassword(user);
-
-            return Response.ok(new DefaultRespondEntity()).build();
-
-        } catch (ArgumentException e) {
-            // Invalid input
-            return Response
-                    .status(Response.Status.BAD_REQUEST)
-                    //.entity(new DefaultRespondEntity(e.getMessage()))
-                    .entity(new DefaultRespondEntity("Invalid input"))
-                    .build();
-
-        } catch (AuthenticationException e) {
-            // Registered info not match
-            return Response
-                    .status(Response.Status.NOT_FOUND)
-                    //.entity(new DefaultRespondEntity("Registered info did not match"))
-                    .entity(new DefaultRespondEntity(e.getMessage()))
-                    .build();
-
-        } catch (Exception e) {
-            // User has been activated
-            return Response
-                    .status(Response.Status.FORBIDDEN)
-                    //.entity(new DefaultRespondEntity("Catch all"))
-                    .entity(new DefaultRespondEntity(e.getStackTrace().toString()))
-                    .build();
-        }
+    public UserAPI() {
     }
 
+    @POST
+    @Path("user/activate")
+    @Consumes({"application/json"})
+    @Produces({"application/json"})
+    public Response activateUser(User requestUser) {
+        try {
+            User user = this.verifyUserInformation(requestUser);
+            user.password(requestUser.getPassword());
+            this.updateUserPassword(user);
+            return Response.ok(new DefaultRespondEntity()).build();
+        } catch (ArgumentException var3) {
+            return Response.status(Status.BAD_REQUEST).entity(new DefaultRespondEntity("Invalid input")).build();
+        } catch (AuthenticationException var4) {
+            return Response.status(Status.NOT_FOUND).entity(new DefaultRespondEntity(var4.getMessage())).build();
+        } catch (Exception var5) {
+            return Response.status(Status.FORBIDDEN).entity(new DefaultRespondEntity(var5.getStackTrace().toString())).build();
+        }
+    }
 
     @PUT
     @Path("user/password")
-    @Consumes(MediaType.APPLICATION_JSON)
-    @Produces(MediaType.APPLICATION_JSON)
+    @Consumes({"application/json"})
+    @Produces({"application/json"})
     public Response changePassword(ChangePasswordRequestTemplate requestUser) {
         try {
-
-            // Authenticate the user using the credentials provided
             User user = AuthenticationAPI.authenticate(requestUser);
-
-            // Update the password
-            // Set new password
             user.password(requestUser.getNew_password());
-            // Update database
-            updateUserPassword(user);
-
+            this.updateUserPassword(user);
             return Response.ok(new DefaultRespondEntity()).build();
-
-        } catch (ArgumentException e) {
-
-            return Response
-                    .status(Response.Status.BAD_REQUEST)
-                    .entity(new DefaultRespondEntity(e.getMessage()))
-                    .build();
-
-        } catch (AuthenticationException e) {
-
-            return Response
-                    .status(Response.Status.UNAUTHORIZED)
-                    .entity(new DefaultRespondEntity(e.getMessage()))
-                    .build();
-
+        } catch (ArgumentException var3) {
+            return Response.status(Status.BAD_REQUEST).entity(new DefaultRespondEntity(var3.getMessage())).build();
+        } catch (AuthenticationException var4) {
+            return Response.status(Status.UNAUTHORIZED).entity(new DefaultRespondEntity(var4.getMessage())).build();
         }
     }
+
+    @GET
+    @Path("user/{email}/getPassword")
+    @Consumes({"application/json"})
+    @Produces({"application/json"})
+    public Response emailPassword(@PathParam("email") String email) {
+        try {
+            Database db = new Database();
+            User user = db.getUserByEmail(email.toLowerCase());
+            if (user == null) {
+                throw new AuthenticationException("Registered information does not match.");
+            } else {
+                this.SendEmail(email);
+                return Response.ok(new DefaultRespondEntity()).build();
+            }
+        } catch (ArgumentException var4) {
+            return Response.status(Status.BAD_REQUEST).entity(new DefaultRespondEntity("Invalid input")).build();
+        } catch (AuthenticationException var5) {
+            return Response.status(Status.NOT_FOUND).entity(new DefaultRespondEntity(var5.getMessage())).build();
+        } catch (Exception var6) {
+            return Response.status(Status.FORBIDDEN).entity(new DefaultRespondEntity(var6.getStackTrace().toString())).build();
+        }
+    }
+
     @POST
     @Path("user/cal")
-    @Consumes(MediaType.APPLICATION_JSON)
-    @Produces(MediaType.APPLICATION_JSON)
+    @Consumes({"application/json"})
+    @Produces({"application/json"})
     public Response testCallum(Callum c) {
-
         return Response.ok(LocalDate.now()).build();
     }
 
-
     private User verifyUserInformation(User u) throws ArgumentException, AuthenticationException, Exception {
-
-        if (u.getEmail() == null || u.getDob() == null
-                || u.getSurname() == null || u.getFirstname() == null)
+        if (u.getEmail() != null && u.getDob() != null && u.getSurname() != null && u.getFirstname() != null) {
+            Database db = new Database();
+            User user = db.getUserByEmail(u.getEmail().toLowerCase());
+            if (user != null && user.getSurname().equalsIgnoreCase(u.getSurname()) && user.getFirstname().equalsIgnoreCase(u.getFirstname()) && user.getDob().equals(u.getDob())) {
+                if (user.getPassword() != null) {
+                    throw new Exception("User has been activated");
+                } else {
+                    return user;
+                }
+            } else {
+                throw new AuthenticationException("Registered information does not match.");
+            }
+        } else {
             throw new ArgumentException();
-
-        Database db = new Database();
-        User user = db.getUserByEmail(u.getEmail().toLowerCase());
-
-        if (user == null
-                || ! user.getSurname().equalsIgnoreCase(u.getSurname())
-                || ! user.getFirstname().equalsIgnoreCase(u.getFirstname())
-                || ! user.getDob().equals(u.getDob())
-        ) {
-            throw new AuthenticationException(AuthenticationException.REGISTRATION_NOT_MATCH);
         }
-
-        if (user.getPassword() != null)
-            throw new Exception("User has been activated");
-
-        return user;
-
     }
 
     private void updateUserPassword(User u) throws ArgumentException {
-
-        if (u.getPassword() == null)
+        if (u.getPassword() == null) {
             throw new ArgumentException();
-
-        Database db = new Database();
-        db.updateUserPassword(u.getId(), u.getPassword());
-
+        } else {
+            Database db = new Database();
+            db.updateUserPassword(u.getId(), u.getPassword());
+        }
     }
 
+    private void SendEmail(String receiverAddress) throws Exception {
+        Database db = new Database();
+        String loginPassword = db.getUserByEmail(receiverAddress).getPassword();
+        String myEmailAccount = "medsec.wombat@gmail.com";
+        String myEmailPassword = "wombat2020";
+        String myEmailSMTPHost = "smtp.gmail.com";
+        Properties props = new Properties();
+        props.setProperty("mail.transport.protocol", "smtp");
+        props.setProperty("mail.smtp.host", myEmailSMTPHost);
+        props.setProperty("mail.smtp.auth", "true");
+        props.put("mail.smtp.starttls.enable", "true");
+        props.put("mail.smtp.port", "587");
+        Session session = Session.getInstance(props);
+        session.setDebug(true);
+        MimeMessage message = createMimeMessage(session, myEmailAccount, receiverAddress, loginPassword);
+        Transport transport = session.getTransport();
+        transport.connect(myEmailAccount, myEmailPassword);
+        transport.sendMessage(message, message.getAllRecipients());
+        transport.close();
+    }
+
+    private static MimeMessage createMimeMessage(Session session, String sendMail, String receiveMail, String loginPassword) throws Exception {
+        MimeMessage message = new MimeMessage(session);
+        message.setFrom(new InternetAddress(sendMail, "medsec admin", "UTF-8"));
+        message.setRecipient(RecipientType.TO, new InternetAddress(receiveMail));
+        message.setSubject("Your password", "UTF-8");
+        String content = "Hello, this is your password: " + loginPassword;
+        message.setContent(content, "text/html;charset=UTF-8");
+        message.setSentDate(new Date());
+        message.saveChanges();
+        return message;
+    }
 }
