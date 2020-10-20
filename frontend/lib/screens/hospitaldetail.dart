@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:frontend/components/hospital.dart';
 import 'package:frontend/util/url_launch_wrapper.dart';
 import 'package:url_launcher/url_launcher.dart';
+import 'package:share/share.dart';
 
 class hospitaldetail extends StatefulWidget {
   final Hospital _hospital;
@@ -31,6 +32,50 @@ class _hospitaldetailState extends State<hospitaldetail> {
             brightness: Brightness.light,
 //            backgroundColor: Colors.transparent,
             elevation: 0.5,
+            actions: <Widget>[
+              SizedBox(
+                  width: 56, // specific value
+                  child: FlatButton(
+                    padding: const EdgeInsets.all(5.0),
+                    onPressed: () {
+                      if (_hospitalState.name != null) {
+                        Share.share(
+                            _hospitalState.name +
+                                '\n' +
+                                "Address: " +
+                                _hospitalState.address +
+                                '\n' +
+                                "Emergency Department: " +
+                                _hospitalState.emergencyDept +
+                                '\n' +
+                                "Phone: " +
+                                _hospitalState.phone +
+                                '\n' +
+                                "After Hours Phone: " +
+                                _hospitalState.aftPhone.toString() +
+                                '\n' +
+                                "Fax: " +
+                                _hospitalState.fax +
+                                '\n' +
+                                "Email: " +
+                                _hospitalState.email.toString() +
+                                '\n' +
+                                "Website: " +
+                                _hospitalState.website +
+                                '\n' +
+                                '\n' +
+                                "From Medical Secretary App",
+                            subject: _hospitalState.name + " Information");
+                      }
+                    },
+                    child: Ink.image(
+                      image: AssetImage('assets/images/shareicon.png'),
+                    ),
+                    // color: Colors.white,
+                  ))
+          
+              
+            ],
           )),
       body: new Builder(builder: (BuildContext context) {
         return new ListView(children: <Widget>[
