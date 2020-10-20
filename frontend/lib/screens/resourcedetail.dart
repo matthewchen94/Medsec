@@ -53,7 +53,6 @@ class _resourcedetailState extends State<resourcedetail> {
                     ),
                     // color: Colors.white,
                   ))
-              
             ],
           )),
       body: new Builder(builder: (BuildContext context) {
