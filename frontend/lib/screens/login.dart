@@ -10,6 +10,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:mailer/mailer.dart';
 import 'package:mailer/smtp_server.dart';
 import 'package:mailer/smtp_server/gmail.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'crediantial.dart';
 
 import 'package:url_launcher/url_launcher.dart';
@@ -88,7 +89,7 @@ class _LoginPageState extends State<LoginPage> {
     }
   }
 
-  sendMail(String email, String password) async {
+  sendMail(String email, String password, BuildContext dialogContext) async {
     String username = EMAIL;
     String password = PASS;
 
@@ -104,11 +105,31 @@ class _LoginPageState extends State<LoginPage> {
 
     try {
       final sendReport = await send(message, smtpServer);
+      Navigator.of(dialogContext).pop();
       print('Message sent: ' +
           sendReport.toString()); //print if the email is sent
+      Fluttertoast.showToast(
+          msg: 'Message sent: ' + sendReport.toString(),
+          toastLength: Toast.LENGTH_SHORT,
+          gravity: ToastGravity.CENTER,
+          timeInSecForIosWeb: 1,
+          backgroundColor: Colors.red,
+          textColor: Colors.white,
+          fontSize: 16.0
+      );
     } on MailerException catch (e) {
       print('Message not sent. \n' +
           e.toString()); //print if the email is not sent
+      Navigator.of(dialogContext).pop();
+      Fluttertoast.showToast(
+          msg: 'Message not sent. \n' + e.toString(),
+          toastLength: Toast.LENGTH_SHORT,
+          gravity: ToastGravity.CENTER,
+          timeInSecForIosWeb: 1,
+          backgroundColor: Colors.red,
+          textColor: Colors.white,
+          fontSize: 16.0
+      );
       // e.toString() will show why the email is not sending
     }
   }
@@ -178,7 +199,7 @@ class _LoginPageState extends State<LoginPage> {
     }
   }
 
-  getPassword(String email) async {
+  getPassword(String email, BuildContext dialogContext) async {
     String url = ServerDetails.ip +
         ':' +
         ServerDetails.port +
@@ -191,10 +212,20 @@ class _LoginPageState extends State<LoginPage> {
     if (response.statusCode == 200) {
       Map<String, dynamic> jsonResponse = json.decode(response.body);
       String password = jsonResponse['password'];
-      sendMail(email, password);
+      sendMail(email, password, dialogContext);
     } else {
       print(response.headers);
       print(response.body);
+      Fluttertoast.showToast(
+          msg: 'Request failed. Error code: '+response.headers.toString(),
+          toastLength: Toast.LENGTH_SHORT,
+          gravity: ToastGravity.CENTER,
+          timeInSecForIosWeb: 1,
+          backgroundColor: Colors.red,
+          textColor: Colors.white,
+          fontSize: 16.0
+      );
+      Navigator.of(dialogContext).pop();
     }
   }
 
@@ -674,7 +705,7 @@ class _LoginPageState extends State<LoginPage> {
             FlatButton(
               child: Text('Send'),
               onPressed: () {
-                getPassword(resetemailController.text);
+                getPassword(resetemailController.text, dialogContext);
               },
             ),
           ],
