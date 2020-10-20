@@ -43,9 +43,11 @@ public class FileMonitor {
                             System.out.println(GenieUI.COMMAND);
                         }
                         else{
-                            GenieUI.COMMAND = null;
-                            GenieUI.FILE_EXTENSION = null;
-                            System.out.println(fileName + " is not a valid file, Upload Failed.");
+                            if (type!=QueryCommand.RESOURCE){
+                                GenieUI.COMMAND = null;
+                                GenieUI.FILE_EXTENSION = null;
+                                System.out.println(fileName + " is not a valid file, Upload Failed.");
+                            }
                         }
 
                     }else{
@@ -99,6 +101,4 @@ public class FileMonitor {
             }).start();
         }
 }
-
-
 
