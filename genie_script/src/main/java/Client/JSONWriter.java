@@ -233,14 +233,16 @@ public class JSONWriter {
                 DataOutputStream dos = new DataOutputStream(os);
 
                 UploadFileManager uploadedFile = new UploadFileManager(uploadPath);
-                System.out.println("Uploaded Success");
+                //System.out.println("Uploaded Success");
                 File myFile = uploadedFile.readFile();
 
                 JSONObject msg = new JSONObject();
                 JSONObject jsonObject = new JSONObject();
 
                 msg.put("command", command.toString());
-                jsonObject.put("FileName", "FileA-" + GenieUI.pdf_relatedID + ".pdf");
+                //jsonObject.put("FileName", "FileA-" + GenieUI.pdf_relatedID + ".pdf");
+                jsonObject.put("FileName", GenieUI.PDFfilename.substring(0,GenieUI.PDFfilename.lastIndexOf("."))+
+                        "-" + GenieUI.pdf_relatedID + ".pdf");
                 jsonObject.put("FileSize", myFile.length());
                 msg.put("doc", jsonObject);
                 System.out.println(msg);
@@ -248,7 +250,7 @@ public class JSONWriter {
                 dos.flush();
 
                 sendData(connectionSocket, myFile);
-
+                System.out.println("Uploaded Success");
             } catch (IOException e) {
                 e.printStackTrace();
             }
@@ -263,14 +265,16 @@ public class JSONWriter {
                DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
                String createdate = date.format(formatter);
                UploadFileManager uploadedFile = new UploadFileManager(uploadPath);
-               System.out.println("Uploaded Success");
+               //System.out.println("Uploaded Success");
                File myFile = uploadedFile.readFile();
 
                JSONObject msg = new JSONObject();
                JSONObject jsonObject = new JSONObject();
 
                msg.put("command", command.toString());
-               jsonObject.put("FileName", "FileP-" + GenieUI.pdf_relatedID + ".pdf");
+               //jsonObject.put("FileName", "FileP-" + GenieUI.pdf_relatedID + ".pdf");
+               jsonObject.put("FileName", GenieUI.PDFfilename.substring(0,GenieUI.PDFfilename.lastIndexOf("."))+
+                                           "-" + GenieUI.pdf_relatedID + ".pdf");
                jsonObject.put("Date", createdate);
                jsonObject.put("FileSize", myFile.length());
                msg.put("doc", jsonObject);
@@ -279,7 +283,7 @@ public class JSONWriter {
                dos.flush();
 
                sendData(connectionSocket, myFile);
-
+               System.out.println("Uploaded Success");
             } catch (IOException e) {
                e.printStackTrace();
             }
