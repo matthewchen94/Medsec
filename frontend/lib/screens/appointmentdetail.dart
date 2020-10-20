@@ -21,6 +21,7 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_full_pdf_viewer/full_pdf_viewer_scaffold.dart';
 import 'package:path_provider/path_provider.dart';
+import 'package:frontend/components/doctor.dart';
 //import 'package:esys_flutter_share/esys_flutter_share.dart' as fshare;
 
 //flutter_full_pdf_viewer Source: https://pub.dev/packages/flutter_full_pdf_viewer#-example-tab-
@@ -91,23 +92,40 @@ class _AppointmentDetailState extends State<AppointmentDetail>
         print("200" + response.body);
         jsonResponse = json.decode(response.body);
         if (jsonResponse != null) {
-          setState(() {
-            _appointmentState = Appointment.fromJson(jsonResponse);
-            print("TEMP" + _appointmentState.date.toString());
-            sendmsg = "Appointment Details" +
-                "\n" +
-                "\n" +
-                "\n" +
-                "Appts: " +
-                (_appointmentState.title != null
-                    ? _appointmentState.title
-                    : "Not available") +
-                "\n" +
-                "\n" +
-                "Day/Time: " +
-                ((_appointmentState.date != null) &&
+          Appointment appointment = Appointment.fromJson(jsonResponse);
+          String url = ServerDetails.ip +
+              ':' +
+              ServerDetails.port +
+              ServerDetails.api +
+              'generalInformation/oneDoctor/'+appointment.did;
+          print(url);
+          Map<String, String> headers = {"Authorization": auth};
+          print(headers);
+          var docResponse = null;
+          var response = await http.get(url, headers: headers);
+          print(response.body);
+          if (response.statusCode == 200) {
+            docResponse = json.decode(response.body);
+            if (docResponse != null) {
+              Doctor doctor = Doctor.fromJson(docResponse);
+              appointment.doctor = doctor;
+              setState(() {
+                _appointmentState = appointment;
+                print("TEMP" + _appointmentState.date.toString());
+                sendmsg = "Appointment Details" +
+                    "\n" +
+                    "\n" +
+                    "\n" +
+                    "Appts: " +
+                    (_appointmentState.doctor.name != null
+                        ? _appointmentState.doctor.name
+                        : "Not available") +
+                    "\n" +
+                    "\n" +
+                    "Day/Time: " +
+                    ((_appointmentState.date != null) &&
                         (_appointmentState.duration != null)
-                    ? DateFormat.jm().format(_appointmentState.date) +
+                        ? DateFormat.jm().format(_appointmentState.date) +
                         ' - ' +
                         DateFormat.jm().format(_appointmentState.date.add(
                             Duration(
@@ -118,15 +136,17 @@ class _AppointmentDetailState extends State<AppointmentDetail>
                         DateFormat.MMMd().format(_appointmentState.date) +
                         ',  ' +
                         DateFormat.y().format(_appointmentState.date)
-                    : "Not available") +
-                "\n" +
-                "\n" +
-                "Location: " +
-                "66 Darebin St, Heidelberg VIC 3084" +
-                "\n" +
-                "\n" +
-                "From Medical Secretary App";
-          });
+                        : "Not available") +
+                    "\n" +
+                    "\n" +
+                    "Location: " +
+                    "66 Darebin St, Heidelberg VIC 3084" +
+                    "\n" +
+                    "\n" +
+                    "From Medical Secretary App";
+              });
+            }
+          } else {}
         }
       } else {
         print(response.body);
@@ -312,14 +332,14 @@ class _AppointmentDetailState extends State<AppointmentDetail>
                   overflow: TextOverflow.ellipsis),
             ],
           ),
-          _appointmentState.title != null
+          _appointmentState.doctor.name != null
               ? Wrap(
                   spacing: 4.0,
                   runSpacing: 4.0,
                   alignment: WrapAlignment.start,
                   children: <Widget>[
                     Text(
-                      _appointmentState.title.toString(),
+                      _appointmentState.doctor.name.toString(),
                       style: TextStyle(
                         fontSize: 16.0,
                         fontFamily: "Arial",
@@ -695,39 +715,17 @@ class _AppointmentDetailState extends State<AppointmentDetail>
                                 mainAxisAlignment:
                                     MainAxisAlignment.spaceEvenly,
                                 children: <Widget>[
-                                  SizedBox(
-                                    width: 100,
-                                    height: 40,
-                                    child: RaisedButton(
-                                        color:
-                                            Color.fromARGB(255, 135, 193, 218),
-                                        onPressed: _save,
-                                        child: Text(
-                                          "SAVE",
-                                          style: TextStyle(
-                                              fontSize: 14.0,
-                                              fontFamily: "Arial",
-                                              color: Colors.white,
-                                              height: 1.0),
-                                          textAlign: TextAlign.center,
-                                        )),
+                                  RaisedButton(
+                                    textColor: Colors.white,
+                                    color: Color.fromARGB(255, 135, 193, 218),
+                                    onPressed: _save,
+                                    child: Text('SAVE'),
                                   ),
-                                  SizedBox(
-                                    width: 100,
-                                    height: 40,
-                                    child: RaisedButton(
-                                        color:
-                                            Color.fromARGB(255, 135, 193, 218),
-                                        onPressed: _cancel,
-                                        child: Text(
-                                          "CANCEL",
-                                          style: TextStyle(
-                                              fontSize: 14.0,
-                                              fontFamily: "Arial",
-                                              color: Colors.white,
-                                              height: 1.0),
-                                          textAlign: TextAlign.center,
-                                        )),
+                                  RaisedButton(
+                                    textColor: Colors.white,
+                                    color: Color.fromARGB(255, 135, 193, 218),
+                                    onPressed: _cancel,
+                                    child: Text('CANCEL'),
                                   )
                                 ],
                               )
@@ -756,47 +754,47 @@ class _AppointmentDetailState extends State<AppointmentDetail>
                   alignment: WrapAlignment.start,
                   children: <Widget>[
                     Container(
-                        child: (_appointmentState.status.toString() ==
-                                "CONFIRMED")
-                            ? Text(
-                                _appointmentState.status.toString(),
-                                style: TextStyle(
-                                    fontSize: 20.0,
-                                    fontFamily: "Arial",
-                                    color: Colors.black,
-                                    height: 1.5),
-                                textAlign: TextAlign.left,
-                              )
-                            : Row(
-                                mainAxisAlignment:
-                                    MainAxisAlignment.spaceBetween,
-                                children: <Widget>[
-                                  Container(
-                                      child: Text(
+                        child:
+                            (_appointmentState.status.toString() == "CONFIRMED")
+                                ? Text(
                                     _appointmentState.status.toString(),
                                     style: TextStyle(
-                                        fontSize: 18.0,
+                                        fontSize: 20.0,
                                         fontFamily: "Arial",
-                                        color: Colors.red,
+                                        color: Colors.black,
                                         height: 1.5),
                                     textAlign: TextAlign.left,
-                                  )),
-                                  RaisedButton(
-                                      color: Color.fromARGB(255, 135, 193, 218),
-                                      onPressed: _confirm,
-                                      padding: EdgeInsets.symmetric(
-                                          vertical: 8, horizontal: 15),
-                                      child: Text(
-                                        "CONFIRM?",
+                                  )
+                                : Row(
+                                    mainAxisAlignment:
+                                        MainAxisAlignment.spaceBetween,
+                                    children: <Widget>[
+                                      Container(
+                                          child: Text(
+                                        _appointmentState.status.toString(),
                                         style: TextStyle(
-                                            fontSize: 20.0,
+                                            fontSize: 18.0,
                                             fontFamily: "Arial",
-                                            color: Colors.white,
+                                            color: Colors.red,
                                             height: 1.5),
-                                        textAlign: TextAlign.right,
+                                        textAlign: TextAlign.left,
                                       )),
-                                ],
-                              ))
+                                      RaisedButton(
+                                          color: Color.fromARGB(255, 135, 193, 218),
+                                          onPressed: _confirm,
+                                          padding: EdgeInsets.symmetric(
+                                              vertical: 10, horizontal: 20),
+                                          child: Text(
+                                            "CONFIRM",
+                                            style: TextStyle(
+                                                fontSize: 14.0,
+                                                fontFamily: "Arial",
+                                                color: Colors.white,
+                                                height: 1.5),
+                                            textAlign: TextAlign.right,
+                                          )),
+                                    ],
+                                  ))
                   ],
                 )
               : Wrap(

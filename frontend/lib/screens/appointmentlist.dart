@@ -8,6 +8,7 @@ import 'package:frontend/screens/appointmentdetail.dart';
 import 'dart:convert';
 import 'package:intl/intl.dart';
 import 'package:frontend/screens/appointments.dart';
+import 'package:frontend/components/doctor.dart';
 
 class AppointmentList extends StatefulWidget {
   @override
@@ -53,15 +54,34 @@ class _AppointmentListState extends State<AppointmentList> {
         print("200" + response.body);
         jsonResponse = json.decode(response.body);
         if (jsonResponse != null) {
-          setState(() {
+
             for (var doc in jsonResponse) {
               Appointment appointment = Appointment.fromJson(doc);
-              var now = new DateTime.now();
-              if (appointment.date.isAfter(now)) {
-                _thirtydaysevents.add(appointment);
-              }
+              String url = ServerDetails.ip +
+                  ':' +
+                  ServerDetails.port +
+                  ServerDetails.api +
+                  'generalInformation/oneDoctor/'+appointment.did;
+              print(url);
+              Map<String, String> headers = {"Authorization": auth};
+              print(headers);
+              var jsonResponse = null;
+              var response = await http.get(url, headers: headers);
+              print(response.body);
+              if (response.statusCode == 200) {
+                jsonResponse = json.decode(response.body);
+                if (jsonResponse != null) {
+                  Doctor doctor = Doctor.fromJson(jsonResponse);
+                  appointment.doctor = doctor;
+                  setState(() {
+                    var now = new DateTime.now();
+                    if (appointment.date.isAfter(now)) {
+                      _thirtydaysevents.add(appointment);
+                    }
+                  });
+                }
+              } else {}
             }
-          });
         }
       } else {
         print(response.body);
@@ -142,7 +162,7 @@ class _AppointmentListState extends State<AppointmentList> {
                       ),
                     ]),
                   ),
-                  title: Text(event.title),
+                  title: Text(event.doctor.name!=null?event.doctor.name:event.title),
                   trailing: event.status == 'UNCONFIRMED'
                       ? Column(children: <Widget>[
                     Icon(Icons.error,
