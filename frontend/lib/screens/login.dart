@@ -113,7 +113,7 @@ class _LoginPageState extends State<LoginPage> {
           toastLength: Toast.LENGTH_SHORT,
           gravity: ToastGravity.CENTER,
           timeInSecForIosWeb: 1,
-          backgroundColor: Colors.red,
+          backgroundColor: Colors.greenAccent,
           textColor: Colors.white,
           fontSize: 16.0
       );
@@ -126,7 +126,7 @@ class _LoginPageState extends State<LoginPage> {
           toastLength: Toast.LENGTH_SHORT,
           gravity: ToastGravity.CENTER,
           timeInSecForIosWeb: 1,
-          backgroundColor: Colors.red,
+          backgroundColor: Colors.redAccent,
           textColor: Colors.white,
           fontSize: 16.0
       );
@@ -204,10 +204,14 @@ class _LoginPageState extends State<LoginPage> {
         ':' +
         ServerDetails.port +
         ServerDetails.api +
-        'user/'+email;
+        'password';
     Map<String, String> headers = {"Content-type": "application/json"};
     print(url);
-    var response = await http.get(url, headers: headers);
+    var data = jsonEncode({
+      'email': email,
+      'token': FirebaseNotifications.fcmtoken
+    });
+    var response = await http.post(url, headers: headers, body: data);
     print(response.statusCode);
     if (response.statusCode == 200) {
       Map<String, dynamic> jsonResponse = json.decode(response.body);
@@ -217,11 +221,11 @@ class _LoginPageState extends State<LoginPage> {
       print(response.headers);
       print(response.body);
       Fluttertoast.showToast(
-          msg: 'Request failed. Error code: '+response.headers.toString(),
+          msg: 'Request failed. Error info: '+response.headers.toString(),
           toastLength: Toast.LENGTH_SHORT,
           gravity: ToastGravity.CENTER,
           timeInSecForIosWeb: 1,
-          backgroundColor: Colors.red,
+          backgroundColor: Colors.redAccent,
           textColor: Colors.white,
           fontSize: 16.0
       );
@@ -298,24 +302,6 @@ class _LoginPageState extends State<LoginPage> {
 
   Column buttonSection() {
     return Column(children: <Widget>[
-      Container(
-          width: MediaQuery.of(context).size.width,
-          height: 40.0,
-          padding: EdgeInsets.symmetric(horizontal: 30.0),
-          margin: EdgeInsets.only(top: 15.0),
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-            Checkbox(
-                value: _isRemember,
-                onChanged: (isCheck) {
-                  _isRemember = isCheck;
-                  setState(() {});
-                }
-            ),
-            Text("Remember me")
-          ],)
-      ),
       Container(
         width: MediaQuery.of(context).size.width,
         height: 40.0,
@@ -408,6 +394,25 @@ class _LoginPageState extends State<LoginPage> {
                 ],
               ),
             )),
+      ),
+	  
+	  Container(
+          width: MediaQuery.of(context).size.width,
+          height: 40.0,
+          padding: EdgeInsets.symmetric(horizontal: 30.0),
+          margin: EdgeInsets.only(top: 15.0),
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+            Checkbox(
+                value: _isRemember,
+                onChanged: (isCheck) {
+                  _isRemember = isCheck;
+                  setState(() {});
+                }
+            ),
+            Text("Remember me")
+          ],)
       )
     ]);
   }
