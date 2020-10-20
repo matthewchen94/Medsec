@@ -55,7 +55,7 @@ public class FileListener extends FileAlterationListenerAdaptor {
             }
             GenieUI.FILE_UPLOAD_PATH = filepath;
             if (GenieUI.COMMAND != null) {
-                System.out.println("Send Update");
+                //System.out.println("Send Update");
                 try {
                     Socket clientSocket = GenieUI.initSSLSocket();
                     TCPClient tcpClient = new TCPClient(clientSocket);
@@ -119,7 +119,7 @@ public class FileListener extends FileAlterationListenerAdaptor {
             }
             GenieUI.FILE_UPLOAD_PATH = filepath;
             if (GenieUI.COMMAND != null) {
-                System.out.println("Send Update");
+                //System.out.println("Send Update");
                 try {
                     Socket clientSocket = GenieUI.initSSLSocket();
                     TCPClient tcpClient = new TCPClient(clientSocket);
