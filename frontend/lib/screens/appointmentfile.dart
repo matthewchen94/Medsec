@@ -53,11 +53,16 @@ class appointmentfile extends StatelessWidget {
 //            backgroundColor: Colors.transparent,
               elevation: 4,
               actions: <Widget>[
-                IconButton(
-                  color: Colors.black,
-                  icon: Icon(Icons.share),
-                  onPressed: () async => await _sharepdfFromUrl(),
-                )
+                SizedBox(
+                    width: 56, // specific value
+                    child: FlatButton(
+                      padding: const EdgeInsets.all(5.0),
+                      onPressed: () async => await _sharepdfFromUrl(),
+                      child: Ink.image(
+                        image: AssetImage('assets/images/shareicon.png'),
+                      ),
+                      color: Colors.white,
+                    ))
               ],
             )),
         path: pathPDF);

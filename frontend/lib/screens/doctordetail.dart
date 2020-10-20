@@ -41,9 +41,8 @@ class doctordetail extends StatelessWidget {
                     child: Ink.image(
                       image: AssetImage('assets/images/shareicon.png'),
                     ),
-                    // color: Colors.white,
+                    color: Colors.white,
                   ))
-             
             ],
           )),
       body: new Builder(builder: (BuildContext context) {

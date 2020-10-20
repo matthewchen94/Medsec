@@ -6,6 +6,11 @@ import 'package:frontend/main.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:frontend/util/serverDetails.dart';
 import 'package:frontend/util/firebase.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:mailer/mailer.dart';
+import 'package:mailer/smtp_server.dart';
+import 'package:mailer/smtp_server/gmail.dart';
+import 'crediantial.dart';
 
 import 'package:url_launcher/url_launcher.dart';
 
@@ -17,15 +22,31 @@ class LoginPage extends StatefulWidget {
 class _LoginPageState extends State<LoginPage> {
   // final loginau;
   // _LoginPageState(this.loginau);
+  bool isSameEmail = true;
   bool _isLoading = false;
+  bool _isRemember = false;
+  String _email = "";
+  String _password = "";
   final TextEditingController emailController = new TextEditingController();
   final TextEditingController passwordController = new TextEditingController();
+  final TextEditingController resetemailController =
+      new TextEditingController();
   final TextEditingController resetPasswordEmailPasswordController =
       new TextEditingController();
   final TextEditingController oldPasswordController =
       new TextEditingController();
   final TextEditingController newPasswordController =
       new TextEditingController();
+
+  FirebaseAuth firebaseAuthen = FirebaseAuth.instance;
+  GlobalKey<ScaffoldState> scaffoldKey = GlobalKey();
+
+
+  @override
+  void initState() {
+    super.initState();
+    loadRememberData();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -53,6 +74,45 @@ class _LoginPageState extends State<LoginPage> {
     );
   }
 
+  loadRememberData() async{
+    SharedPreferences sharedPreferences = await SharedPreferences.getInstance();
+    if (sharedPreferences.getBool("isRemember")) {
+      setState(() {
+        _isRemember = true;
+        _email = sharedPreferences.getString("email");
+        _password = sharedPreferences.getString("password");
+
+      });
+      emailController.text = _email;
+      passwordController.text = _password;
+    }
+  }
+
+  sendMail(String email, String password) async {
+    String username = EMAIL;
+    String password = PASS;
+
+    final smtpServer = gmail(username, password);
+    final message = Message()
+      ..from = Address(username)
+      ..recipients.add('$email') //recipent email
+      ..subject =
+          'Password recover link from MMS : ${DateTime.now()}' //subject of the email
+      ..text = 'Your password is: '+password
+      //'This is the plain text.\nThis is line 2 of the text part.'
+      ..html = "<h3>Thanks for with localhost."; //body of the email
+
+    try {
+      final sendReport = await send(message, smtpServer);
+      print('Message sent: ' +
+          sendReport.toString()); //print if the email is sent
+    } on MailerException catch (e) {
+      print('Message not sent. \n' +
+          e.toString()); //print if the email is not sent
+      // e.toString() will show why the email is not sending
+    }
+  }
+
   signIn(String email, pass) async {
     SharedPreferences sharedPreferences = await SharedPreferences.getInstance();
     String url = ServerDetails.ip +
@@ -75,6 +135,12 @@ class _LoginPageState extends State<LoginPage> {
         setState(() {
           _isLoading = false;
         });
+
+        sharedPreferences.setBool("isRemember", _isRemember);
+        if (_isRemember) {
+          sharedPreferences.setString("email", email);
+          sharedPreferences.setString("password", pass);
+        }
         sharedPreferences.setString("token", jsonResponse['token']);
         sharedPreferences.setString(
             "token_expire_date", jsonResponse['token_expire_date']);
@@ -107,6 +173,26 @@ class _LoginPageState extends State<LoginPage> {
           },
         );
       });
+      print(response.headers);
+      print(response.body);
+    }
+  }
+
+  getPassword(String email) async {
+    String url = ServerDetails.ip +
+        ':' +
+        ServerDetails.port +
+        ServerDetails.api +
+        'user/'+email;
+    Map<String, String> headers = {"Content-type": "application/json"};
+    print(url);
+    var response = await http.get(url, headers: headers);
+    print(response.statusCode);
+    if (response.statusCode == 200) {
+      Map<String, dynamic> jsonResponse = json.decode(response.body);
+      String password = jsonResponse['password'];
+      sendMail(email, password);
+    } else {
       print(response.headers);
       print(response.body);
     }
@@ -181,6 +267,24 @@ class _LoginPageState extends State<LoginPage> {
 
   Column buttonSection() {
     return Column(children: <Widget>[
+      Container(
+          width: MediaQuery.of(context).size.width,
+          height: 40.0,
+          padding: EdgeInsets.symmetric(horizontal: 30.0),
+          margin: EdgeInsets.only(top: 15.0),
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+            Checkbox(
+                value: _isRemember,
+                onChanged: (isCheck) {
+                  _isRemember = isCheck;
+                  setState(() {});
+                }
+            ),
+            Text("Remember me")
+          ],)
+      ),
       Container(
         width: MediaQuery.of(context).size.width,
         height: 40.0,
@@ -516,28 +620,62 @@ class _LoginPageState extends State<LoginPage> {
       builder: (BuildContext dialogContext) {
         return AlertDialog(
           title: Center(
-            child: Text('Forget Password?',
+            child: Text('Forgot password?',
                 style: TextStyle(color: Colors.grey, fontSize: 17)),
           ),
-          content: Container(
-              height: 40.0,
-              padding: EdgeInsets.symmetric(horizontal: 20.0),
-              child: Column(
+          content: SingleChildScrollView(
+              //height: 180.0,
+              //padding: EdgeInsets.symmetric(horizontal: 10.0),
+              child: new Column(
+            children: <Widget>[
+//                Text('Please enter your email and'),
+//                Text('password to reset.'),
+              Wrap(
                 children: <Widget>[
-                  Text('Please contact your clinic'),
-                  Text('Ph: 0415181703'),
+                  Center(child: Text('Please enter your email')),
+                  Center(child: Text('address to receive reset link.'))
                 ],
-              )),
+              ),
+              Container(
+                height: 30.0,
+                margin: EdgeInsets.only(top: 10.0, bottom: 0.0),
+                padding: EdgeInsets.only(left: 0.0),
+                child: TextFormField(
+                  controller: resetemailController,
+                  cursorColor: Colors.black,
+                  style: TextStyle(color: Colors.black, fontSize: 15),
+                  decoration: InputDecoration(
+                    //icon: Icon(Icons.email, color: Colors.white70),
+                    hintText: "Email...",
+                    border: OutlineInputBorder(
+                      borderSide: BorderSide(color: Colors.black),
+                      borderRadius: const BorderRadius.all(
+                        const Radius.circular(5.0),
+                      ),
+                    ),
+                    hintStyle: TextStyle(color: Colors.grey),
+                    contentPadding: const EdgeInsets.only(left: 20.0),
+                    filled: true,
+                    fillColor: Colors.white70,
+                  ),
+                ),
+              ),
+            ],
+          )),
           actions: <Widget>[
             FlatButton(
               child: Text('Cancel'),
               onPressed: () {
-                Navigator.of(dialogContext).pop(); // Dismiss alert dialog
+                Navigator.of(dialogContext).pop();
+                emailController.clear();
+                // Dismiss alert dialog
               },
             ),
             FlatButton(
-              child: Text('Call'),
-              onPressed: () => launch("tel://0415181703"),
+              child: Text('Send'),
+              onPressed: () {
+                getPassword(resetemailController.text);
+              },
             ),
           ],
         );
