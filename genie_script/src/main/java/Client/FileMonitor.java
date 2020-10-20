@@ -34,9 +34,9 @@ public class FileMonitor {
                     //System.out.println(filepath);
                     if (type!=null){
 
-                        if (/*(type==QueryCommand.FILE && fileExtention.equals("pdf"))
-                                ||*/ (type!=QueryCommand.FILE && fileExtention.equals("html"))
+                        if (((type!=QueryCommand.FILE && fileExtention.equals("html"))
                                 || (type!=QueryCommand.FILE && fileExtention.equals("xls")))
+                             && (type!=QueryCommand.RESOURCE))
                         {
                             GenieUI.COMMAND = type;
                             GenieUI.FILE_EXTENSION = fileExtention;
@@ -55,7 +55,7 @@ public class FileMonitor {
                     }
                     GenieUI.FILE_UPLOAD_PATH = filepath;
                     if (GenieUI.COMMAND != null) {
-                        System.out.println("Send Update");
+                        //System.out.println("Send Update");
                         try {
                             Socket clientSocket = GenieUI.initSSLSocket();
                             TCPClient tcpClient = new TCPClient(clientSocket);
@@ -99,4 +99,6 @@ public class FileMonitor {
             }).start();
         }
 }
+
+
 
