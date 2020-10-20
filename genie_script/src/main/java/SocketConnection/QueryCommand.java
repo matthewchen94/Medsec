@@ -3,6 +3,7 @@ package SocketConnection;
 /**
  * Created by William Pan on 25/05/2018.
  * Modified by Robin Wang on 21/05/2020.
+ * Modified by Xueyi Jin and Chiyu Chen on 20/10/2020.
  */
 public enum QueryCommand {
     AUTHENTICATION("Authentication",1),
