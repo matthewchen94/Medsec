@@ -26,16 +26,24 @@ class doctordetail extends StatelessWidget {
 //            backgroundColor: Colors.transparent,
             elevation: 0.5,
             actions: <Widget>[
-              IconButton(
-                  color: Colors.black,
-                  icon: Icon(Icons.share),
-                  onPressed: () {
-                    if (sendmsg != null) {
-                      DateTime now = new DateTime.now();
-                      Share.share(sendmsg,
-                          subject: 'Doctors Details send on ' + now.toString());
-                    }
-                  })
+              SizedBox(
+                  width: 56, // specific value
+                  child: FlatButton(
+                    padding: const EdgeInsets.all(5.0),
+                    onPressed: () {
+                      if (sendmsg != null) {
+                        DateTime now = new DateTime.now();
+                        Share.share(sendmsg,
+                            subject:
+                                'Doctors Details send on ' + now.toString());
+                      }
+                    },
+                    child: Ink.image(
+                      image: AssetImage('assets/images/shareicon.png'),
+                    ),
+                    // color: Colors.white,
+                  ))
+             
             ],
           )),
       body: new Builder(builder: (BuildContext context) {
