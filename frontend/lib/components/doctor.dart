@@ -7,26 +7,30 @@ class Doctor {
   final String email;
   final String website;
   final String expertise;
+  final String id;
 
   Doctor(
       {this.name,
-        this.bio,
-        this.address,
-        this.phone,
-        this.fax,
-        this.email,
-        this.website,
-        this.expertise});
+      this.bio,
+      this.address,
+      this.phone,
+      this.fax,
+      this.email,
+      this.website,
+      this.expertise,
+      this.id});
 
   factory Doctor.fromJson(Map<String, dynamic> json) {
     return Doctor(
-        name: json['name'],
-        bio: json['bio'],
-        address: json['address'],
-        phone: json['phone'],
-        fax: json['fax'],
-        email: json['email'],
-        website: json['website'],
-        expertise: json['expertise']);
+      name: json['name'],
+      bio: json['bio'],
+      address: json['address'],
+      phone: json['phone'],
+      fax: json['fax'],
+      email: json['email'],
+      website: json['website'],
+      expertise: json['expertise'],
+      id: json['id'],
+    );
   }
 }
