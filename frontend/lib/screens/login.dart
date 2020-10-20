@@ -7,10 +7,10 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:frontend/util/serverDetails.dart';
 import 'package:frontend/util/firebase.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:mailer/mailer.dart';
-import 'package:mailer/smtp_server.dart';
-import 'package:mailer/smtp_server/gmail.dart';
-import 'package:fluttertoast/fluttertoast.dart';
+// import 'package:mailer/mailer.dart';
+// import 'package:mailer/smtp_server.dart';
+// import 'package:mailer/smtp_server/gmail.dart';
+// import 'package:fluttertoast/fluttertoast.dart';
 import 'crediantial.dart';
 
 import 'package:url_launcher/url_launcher.dart';
@@ -38,10 +38,11 @@ class _LoginPageState extends State<LoginPage> {
       new TextEditingController();
   final TextEditingController newPasswordController =
       new TextEditingController();
+  final TextEditingController getpasswordController =
+      new TextEditingController();
 
   FirebaseAuth firebaseAuthen = FirebaseAuth.instance;
   GlobalKey<ScaffoldState> scaffoldKey = GlobalKey();
-
 
   @override
   void initState() {
@@ -75,64 +76,60 @@ class _LoginPageState extends State<LoginPage> {
     );
   }
 
-  loadRememberData() async{
+  loadRememberData() async {
     SharedPreferences sharedPreferences = await SharedPreferences.getInstance();
     if (sharedPreferences.getBool("isRemember")) {
       setState(() {
         _isRemember = true;
         _email = sharedPreferences.getString("email");
         _password = sharedPreferences.getString("password");
-
       });
       emailController.text = _email;
       passwordController.text = _password;
     }
   }
+  // sendMail(String email, String password, BuildContext dialogContext) async {
+  //   String username = EMAIL;
+  //   String password = PASS;
 
-  sendMail(String email, String password, BuildContext dialogContext) async {
-    String username = EMAIL;
-    String password = PASS;
+  //   final smtpServer = gmail(username, password);
+  //   final message = Message()
+  //     ..from = Address(username)
+  //     ..recipients.add('$email') //recipent email
+  //     ..subject =
+  //         'Password recover link from MMS : ${DateTime.now()}' //subject of the email
+  //     ..text = 'Your password is: ' + password
+  //     //'This is the plain text.\nThis is line 2 of the text part.'
+  //     ..html = "<h3>Thanks for with localhost."; //body of the email
 
-    final smtpServer = gmail(username, password);
-    final message = Message()
-      ..from = Address(username)
-      ..recipients.add('$email') //recipent email
-      ..subject =
-          'Password recover link from MMS : ${DateTime.now()}' //subject of the email
-      ..text = 'Your password is: '+password
-      //'This is the plain text.\nThis is line 2 of the text part.'
-      ..html = "<h3>Thanks for with localhost."; //body of the email
-
-    try {
-      final sendReport = await send(message, smtpServer);
-      Navigator.of(dialogContext).pop();
-      print('Message sent: ' +
-          sendReport.toString()); //print if the email is sent
-      Fluttertoast.showToast(
-          msg: 'Message sent: ' + sendReport.toString(),
-          toastLength: Toast.LENGTH_SHORT,
-          gravity: ToastGravity.CENTER,
-          timeInSecForIosWeb: 1,
-          backgroundColor: Colors.greenAccent,
-          textColor: Colors.white,
-          fontSize: 16.0
-      );
-    } on MailerException catch (e) {
-      print('Message not sent. \n' +
-          e.toString()); //print if the email is not sent
-      Navigator.of(dialogContext).pop();
-      Fluttertoast.showToast(
-          msg: 'Message not sent. \n' + e.toString(),
-          toastLength: Toast.LENGTH_SHORT,
-          gravity: ToastGravity.CENTER,
-          timeInSecForIosWeb: 1,
-          backgroundColor: Colors.redAccent,
-          textColor: Colors.white,
-          fontSize: 16.0
-      );
-      // e.toString() will show why the email is not sending
-    }
-  }
+  //   try {
+  //     final sendReport = await send(message, smtpServer);
+  //     Navigator.of(dialogContext).pop();
+  //     print('Message sent: ' +
+  //         sendReport.toString()); //print if the email is sent
+  //     Fluttertoast.showToast(
+  //         msg: 'Message sent: ' + sendReport.toString(),
+  //         toastLength: Toast.LENGTH_SHORT,
+  //         gravity: ToastGravity.CENTER,
+  //         timeInSecForIosWeb: 1,
+  //         backgroundColor: Colors.greenAccent,
+  //         textColor: Colors.white,
+  //         fontSize: 16.0);
+  //   } on MailerException catch (e) {
+  //     print('Message not sent. \n' +
+  //         e.toString()); //print if the email is not sent
+  //     Navigator.of(dialogContext).pop();
+  //     Fluttertoast.showToast(
+  //         msg: 'Message not sent. \n' + e.toString(),
+  //         toastLength: Toast.LENGTH_SHORT,
+  //         gravity: ToastGravity.CENTER,
+  //         timeInSecForIosWeb: 1,
+  //         backgroundColor: Colors.redAccent,
+  //         textColor: Colors.white,
+  //         fontSize: 16.0);
+  //     // e.toString() will show why the email is not sending
+  //   }
+  // }
 
   signIn(String email, pass) async {
     SharedPreferences sharedPreferences = await SharedPreferences.getInstance();
@@ -199,37 +196,70 @@ class _LoginPageState extends State<LoginPage> {
     }
   }
 
-  getPassword(String email, BuildContext dialogContext) async {
+  getPassword(String email) async {
+    SharedPreferences sharedPreferences = await SharedPreferences.getInstance();
     String url = ServerDetails.ip +
         ':' +
         ServerDetails.port +
         ServerDetails.api +
-        'password';
+        'user/' +
+        email +
+        '/getPassword';
     Map<String, String> headers = {"Content-type": "application/json"};
+    // var data = jsonEncode({'email': email});
     print(url);
-    var data = jsonEncode({
-      'email': email,
-      'token': FirebaseNotifications.fcmtoken
-    });
-    var response = await http.post(url, headers: headers, body: data);
+    var jsonResponse = null;
+    // var response = await http.get(url, headers: headers, body: data);
+    var response = await http.get(url, headers: headers);
+
     print(response.statusCode);
     if (response.statusCode == 200) {
-      Map<String, dynamic> jsonResponse = json.decode(response.body);
-      String password = jsonResponse['password'];
-      sendMail(email, password, dialogContext);
+      jsonResponse = json.decode(response.body);
+      if (jsonResponse != null) {
+        Widget okButton = FlatButton(
+            child: Text("OK"),
+            onPressed: () {
+              Navigator.push(context,
+                  MaterialPageRoute(builder: (context) => LoginPage()));
+            });
+        setState(() {
+          AlertDialog alert = AlertDialog(
+            title: Text("Notification"),
+            content: Text("Send successfully."),
+            actions: [
+              okButton,
+            ],
+          );
+          showDialog(
+            context: context,
+            builder: (BuildContext context) {
+              return alert;
+            },
+          );
+        });
+        getpasswordController.clear();
+      }
     } else {
+      setState(() {
+        showDialog(
+            context: context,
+            builder: (context) => AlertDialog(
+                  title: Text("Error message"),
+                  content: Text("Oops! This email doesn't exit."),
+                  actions: <Widget>[
+                    FlatButton(
+                        child: Text('Ok'),
+                        onPressed: () => Navigator.of(context)
+                            .pushAndRemoveUntil(
+                                MaterialPageRoute(
+                                    builder: (BuildContext context) =>
+                                        MainPage()),
+                                (Route<dynamic> route) => false)),
+                  ],
+                ));
+      });
       print(response.headers);
       print(response.body);
-      Fluttertoast.showToast(
-          msg: 'Request failed. Error info: '+response.headers.toString(),
-          toastLength: Toast.LENGTH_SHORT,
-          gravity: ToastGravity.CENTER,
-          timeInSecForIosWeb: 1,
-          backgroundColor: Colors.redAccent,
-          textColor: Colors.white,
-          fontSize: 16.0
-      );
-      Navigator.of(dialogContext).pop();
     }
   }
 
@@ -395,8 +425,8 @@ class _LoginPageState extends State<LoginPage> {
               ),
             )),
       ),
-	  
-	  Container(
+
+      Container(
           width: MediaQuery.of(context).size.width,
           height: 40.0,
           padding: EdgeInsets.symmetric(horizontal: 30.0),
@@ -404,16 +434,15 @@ class _LoginPageState extends State<LoginPage> {
           child: Row(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-            Checkbox(
-                value: _isRemember,
-                onChanged: (isCheck) {
-                  _isRemember = isCheck;
-                  setState(() {});
-                }
-            ),
-            Text("Remember me")
-          ],)
-      )
+              Checkbox(
+                  value: _isRemember,
+                  onChanged: (isCheck) {
+                    _isRemember = isCheck;
+                    setState(() {});
+                  }),
+              Text("Remember me")
+            ],
+          ))
     ]);
   }
 
@@ -656,7 +685,45 @@ class _LoginPageState extends State<LoginPage> {
       builder: (BuildContext dialogContext) {
         return AlertDialog(
           title: Center(
-            child: Text('Forgot password?',
+            child: Text('Forget Password?',
+                style: TextStyle(color: Colors.grey, fontSize: 17)),
+          ),
+          content: Container(
+              height: 40.0,
+              padding: EdgeInsets.symmetric(horizontal: 20.0),
+              child: Column(
+                children: <Widget>[
+                  Text('Send the password to your email?'),
+                  // Text('Ph: 0415181703'),
+                ],
+              )),
+          actions: <Widget>[
+            FlatButton(
+              child: Text('Cancel'),
+              onPressed: () {
+                Navigator.of(dialogContext).pop(); // Dismiss alert dialog
+              },
+            ),
+            FlatButton(
+                child: Text('Yes'),
+                // onPressed: () => launch("tel://0415181703"),
+                onPressed: () {
+                  createinputEmailDialog2(context);
+                }),
+          ],
+        );
+      },
+    );
+  }
+
+  createinputEmailDialog2(BuildContext context) {
+    return showDialog<void>(
+      context: context,
+      // false = user must tap button, true = tap outside dialog
+      builder: (BuildContext dialogContext) {
+        return AlertDialog(
+          title: Center(
+            child: Text('Please input your email',
                 style: TextStyle(color: Colors.grey, fontSize: 17)),
           ),
           content: SingleChildScrollView(
@@ -666,18 +733,12 @@ class _LoginPageState extends State<LoginPage> {
             children: <Widget>[
 //                Text('Please enter your email and'),
 //                Text('password to reset.'),
-              Wrap(
-                children: <Widget>[
-                  Center(child: Text('Please enter your email')),
-                  Center(child: Text('address to receive reset link.'))
-                ],
-              ),
               Container(
                 height: 30.0,
                 margin: EdgeInsets.only(top: 10.0, bottom: 0.0),
                 padding: EdgeInsets.only(left: 0.0),
                 child: TextFormField(
-                  controller: resetemailController,
+                  controller: getpasswordController,
                   cursorColor: Colors.black,
                   style: TextStyle(color: Colors.black, fontSize: 15),
                   decoration: InputDecoration(
@@ -703,14 +764,13 @@ class _LoginPageState extends State<LoginPage> {
               child: Text('Cancel'),
               onPressed: () {
                 Navigator.of(dialogContext).pop();
-                emailController.clear();
-                // Dismiss alert dialog
+                getpasswordController.clear();
               },
             ),
             FlatButton(
               child: Text('Send'),
               onPressed: () {
-                getPassword(resetemailController.text, dialogContext);
+                getPassword(getpasswordController.text);
               },
             ),
           ],
