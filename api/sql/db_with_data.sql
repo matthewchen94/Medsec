@@ -93,12 +93,6 @@ CREATE TABLE `File` (
   CONSTRAINT `File_ibfk_2` FOREIGN KEY (`apptid`) REFERENCES `Appointment` (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
--- INSERT INTO `File` (`id`, `apptid`, `title`, `link`) VALUES
--- (1, 1,  'File-sample-1.pdf',  '/result/1/File-sample-1.pdf'),
--- (2, 2,  'File-sample-2.pdf',  '/result/2/File-sample-2.pdf'),
--- (3, 3,  'File-3.pdf', '/result/3/File-3.pdf'),
--- (131828,  131828, 'File-sample-131828.pdf', '/result/131828/File-sample-131828.pdf'),
--- (131829,  131829, 'File-sample-131829.pdf', '/result/131829/File-sample-131829.pdf');
 
 DROP TABLE IF EXISTS `Hospital`;
 CREATE TABLE `Hospital` (
@@ -264,13 +258,6 @@ CREATE TABLE `Resource` (
   CONSTRAINT `Resource_ibfk_2` FOREIGN KEY (`uid`) REFERENCES `User` (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
-INSERT INTO `Resource` (`id`, `uid`, `name`, `date`, `content`) VALUES
-(1, 4598, 'Colorectal cancer',  '2020-09-30', 'https://www.eviq.org.au/medical-oncology/colorectal/adjuvant-and-neoadjuvant/637-colorectal-adjuvant-folfox6-modified-fluoro');
--- (2, 2,  'bilibili', '2020-09-30', 'https://www.bilibili.com/'),
--- (3, 1,  'bilibili', '2020-09-30', 'https://www.bilibili.com/'),
--- (4, 3,  'test', '2020-09-30', 'testtesttest'),
--- (5, 3,  'test', '2020-09-30', 'https://www.apple.com/au/'),
--- (6, 2,  'test0929', '2020-09-30', '123456789');
 
 DROP TABLE IF EXISTS `ResourceFile`;
 CREATE TABLE `ResourceFile` (
