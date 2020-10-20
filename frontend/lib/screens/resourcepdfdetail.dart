@@ -47,26 +47,28 @@ class _resourcepdfdetailState extends State<resourcepdfdetail> {
             leading: BackButton(color: Colors.black),
             centerTitle: true,
             title: Text("PDF Details", style: TextStyle(color: Colors.black)),
-            backgroundColor: Color.fromARGB(255, 135, 193, 218),
+            backgroundColor: Colors.white,
             brightness: Brightness.light,
 //            backgroundColor: Colors.transparent,
             elevation: 0.5,
             actions: <Widget>[
-              Text("Share",
-                  style: TextStyle(color: Colors.black, fontSize: 18)),
-              IconButton(
-                color: Colors.black,
-                icon: Icon(Icons.share),
-                tooltip: 'share',
-                onPressed: () async => await _sharepdfFromUrl(),
-              )
+              SizedBox(
+                  width: 56, // specific value
+                  child: FlatButton(
+                    padding: const EdgeInsets.all(5.0),
+                    onPressed: () async => await _sharepdfFromUrl(),
+                    child: Ink.image(
+                      image: AssetImage('assets/images/shareicon.png'),
+                    ),
+                    // color: Colors.white,
+                  ))
             ],
           )),
       body: new Builder(builder: (BuildContext context) {
         return new Container(
             margin: const EdgeInsets.all(8.0),
             decoration: new BoxDecoration(
-              color: Colors.white,
+              color: Color.fromARGB(255, 196, 218, 234),
               borderRadius: BorderRadius.all(Radius.circular(4.0)),
             ),
             child: _buildCard(_resourcepdfState.title, _resourcepdfState.link));
