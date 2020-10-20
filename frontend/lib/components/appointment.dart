@@ -1,4 +1,12 @@
+import 'dart:convert';
+
 import 'package:flutter/foundation.dart';
+
+List<Appointment> appointmentFromJson(String str) => List<Appointment>.from(
+    json.decode(str).map((x) => Appointment.fromJson(x)));
+
+String appointmentToJson(List<Appointment> data) =>
+    json.encode(List<dynamic>.from(data.map((x) => x.toJson())));
 
 class Appointment {
   final String id;
@@ -10,7 +18,8 @@ class Appointment {
   final String note;
   final String userNote;
   final String status;
-  final String did;
+
+  var doctor;
 
   Appointment(
       {this.id,
@@ -21,8 +30,7 @@ class Appointment {
       this.duration,
       this.note,
       this.userNote,
-      this.status,
-      this.did});
+      this.status});
 
   factory Appointment.fromJson(Map<String, dynamic> json) {
     return Appointment(
@@ -34,7 +42,18 @@ class Appointment {
         duration: json['duration'] as int,
         note: json['note'],
         userNote: json['user_note'],
-        status: json['status'],
-        did: json['did']);
+        status: json['status']);
   }
+
+  Map<String, dynamic> toJson() => {
+        "id": id,
+        "uid": pid,
+        "title": title,
+        "detail": detail,
+        "date": date.toIso8601String(),
+        "duration": duration,
+        "note": note,
+        "user_note": userNote,
+        "status": status,
+      };
 }
