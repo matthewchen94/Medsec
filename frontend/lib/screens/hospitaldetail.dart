@@ -43,25 +43,25 @@ class _hospitaldetailState extends State<hospitaldetail> {
                             _hospitalState.name +
                                 '\n' +
                                 "Address: " +
-                                _hospitalState.address +
+                                _hospitalState.address.toString() +
                                 '\n' +
                                 "Emergency Department: " +
-                                _hospitalState.emergencyDept +
+                                _hospitalState.emergencyDept.toString() +
                                 '\n' +
                                 "Phone: " +
-                                _hospitalState.phone +
+                                _hospitalState.phone.toString() +
                                 '\n' +
                                 "After Hours Phone: " +
                                 _hospitalState.aftPhone.toString() +
                                 '\n' +
                                 "Fax: " +
-                                _hospitalState.fax +
+                                _hospitalState.fax.toString() +
                                 '\n' +
                                 "Email: " +
                                 _hospitalState.email.toString() +
                                 '\n' +
                                 "Website: " +
-                                _hospitalState.website +
+                                _hospitalState.website.toString() +
                                 '\n' +
                                 '\n' +
                                 "From Medical Secretary App",
