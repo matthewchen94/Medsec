@@ -249,12 +249,11 @@ class _LoginPageState extends State<LoginPage> {
                   actions: <Widget>[
                     FlatButton(
                         child: Text('Ok'),
-                        onPressed: () => Navigator.of(context)
-                            .pushAndRemoveUntil(
-                                MaterialPageRoute(
-                                    builder: (BuildContext context) =>
-                                        MainPage()),
-                                (Route<dynamic> route) => false)),
+                        onPressed: () {
+              Navigator.push(context,
+                  MaterialPageRoute(builder: (context) => LoginPage()));
+            }
+                    ),
                   ],
                 ));
       });
@@ -283,9 +282,10 @@ class _LoginPageState extends State<LoginPage> {
         Widget okButton = FlatButton(
             child: Text("OK"),
             onPressed: () {
-              Navigator.push(
-                  context, MaterialPageRoute(builder: (context) => MainPage()));
-            });
+              Navigator.push(context,
+                  MaterialPageRoute(builder: (context) => LoginPage()));
+            }
+        );
         setState(() {
           AlertDialog alert = AlertDialog(
             title: Text("Notification"),
@@ -316,12 +316,11 @@ class _LoginPageState extends State<LoginPage> {
                   actions: <Widget>[
                     FlatButton(
                         child: Text('Ok'),
-                        onPressed: () => Navigator.of(context)
-                            .pushAndRemoveUntil(
-                                MaterialPageRoute(
-                                    builder: (BuildContext context) =>
-                                        MainPage()),
-                                (Route<dynamic> route) => false)),
+                        onPressed: () => Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                                builder: (context) => LoginPage()))
+                    ),
                   ],
                 ));
       });
