@@ -78,7 +78,8 @@ class _LoginPageState extends State<LoginPage> {
 
   loadRememberData() async {
     SharedPreferences sharedPreferences = await SharedPreferences.getInstance();
-    if (sharedPreferences.getBool("isRemember")) {
+    if (sharedPreferences.getBool("isRemember") != null &&
+        sharedPreferences.getBool("isRemember")) {
       setState(() {
         _isRemember = true;
         _email = sharedPreferences.getString("email");

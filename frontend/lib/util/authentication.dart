@@ -22,6 +22,7 @@ class Authentication{
   //For whatever reason user needs to go back to login screen, clear cache and go to login
   static void bounceUser(BuildContext context) async {
     SharedPreferences sharedPreferences = await SharedPreferences.getInstance();
+    sharedPreferences.setString("token", null);
 //    sharedPreferences.clear();
     Navigator.of(context).pushAndRemoveUntil(MaterialPageRoute(builder: (BuildContext context) => MainPage()), (Route<dynamic> route) => false);
   }
@@ -29,6 +30,7 @@ class Authentication{
   //Ensures no data in shared prefs
   static void logout() async {
     SharedPreferences sharedPreferences = await SharedPreferences.getInstance();
+    sharedPreferences.setString("token", null);
 //    sharedPreferences.clear();
   }
 }

@@ -84,6 +84,7 @@ class _AppointmentListState extends State<AppointmentList> {
       } else {
         print(response.body);
       }
+      _futureevents.sort((a, b) => (a.date).compareTo(b.date));
       setState(() {
         _isLoading = false;
       });
@@ -115,7 +116,7 @@ class _AppointmentListState extends State<AppointmentList> {
         ),
         body: (_futureevents.length == 0)
             ? (!_isLoading
-                ? Text("No upcoming appointment record currently!",
+                ? Text("No appointment record in current month!",
                     textAlign: TextAlign.center,
                     style: TextStyle(color: Colors.pink, fontSize: 16))
                 : Text("Loading...",
