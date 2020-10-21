@@ -26,7 +26,7 @@ import java.time.format.DateTimeFormatter;
 
 public class GenieUI {
     private static int PORT = 11111;
-    private static String IP = "3.136.112.72";
+    private static String IP = "3.25.215.33";
     public static String FileMonitorPATH="Please choose a directory as a Genie file";
     public static boolean monitorThread = false;
     public static String PDFfilename;
