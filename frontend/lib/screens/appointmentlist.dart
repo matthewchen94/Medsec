@@ -116,7 +116,7 @@ class _AppointmentListState extends State<AppointmentList> {
         ),
         body: (_futureevents.length == 0)
             ? (!_isLoading
-                ? Text("No appointment record in current month!",
+                ? Text("No upcoming appointment record currently!",
                     textAlign: TextAlign.center,
                     style: TextStyle(color: Colors.pink, fontSize: 16))
                 : Text("Loading...",
