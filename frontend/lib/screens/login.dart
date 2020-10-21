@@ -174,7 +174,7 @@ class _LoginPageState extends State<LoginPage> {
           child: Text("OK"),
           onPressed: () {
             Navigator.push(
-                context, MaterialPageRoute(builder: (context) => MainPage()));
+                context, MaterialPageRoute(builder: (context) => LoginPage()));
           });
       setState(() {
         AlertDialog alert = AlertDialog(
@@ -250,10 +250,11 @@ class _LoginPageState extends State<LoginPage> {
                     FlatButton(
                         child: Text('Ok'),
                         onPressed: () {
-              Navigator.push(context,
-                  MaterialPageRoute(builder: (context) => LoginPage()));
-            }
-                    ),
+                          Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                  builder: (context) => LoginPage()));
+                        }),
                   ],
                 ));
       });
@@ -284,8 +285,7 @@ class _LoginPageState extends State<LoginPage> {
             onPressed: () {
               Navigator.push(context,
                   MaterialPageRoute(builder: (context) => LoginPage()));
-            }
-        );
+            });
         setState(() {
           AlertDialog alert = AlertDialog(
             title: Text("Notification"),
@@ -319,8 +319,7 @@ class _LoginPageState extends State<LoginPage> {
                         onPressed: () => Navigator.push(
                             context,
                             MaterialPageRoute(
-                                builder: (context) => LoginPage()))
-                    ),
+                                builder: (context) => LoginPage()))),
                   ],
                 ));
       });
