@@ -119,7 +119,7 @@ class _AppointmentsState extends State<Appointments>
       print(response.body);
       if (response.statusCode == 200) {
         _samemonthevents = appointmentFromJson(response.body);
-        _samemonthevents.sort((a, b) => (b.date).compareTo(a.date));
+        _samemonthevents.sort((a, b) => (a.date).compareTo(b.date));
       }
     }
   }
