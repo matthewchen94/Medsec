@@ -97,7 +97,8 @@ class _AppointmentDetailState extends State<AppointmentDetail>
               ':' +
               ServerDetails.port +
               ServerDetails.api +
-              'generalInformation/oneDoctor/'+appointment.did;
+              'generalInformation/oneDoctor/' +
+              appointment.did;
           print(url);
           Map<String, String> headers = {"Authorization": auth};
           print(headers);
@@ -124,18 +125,19 @@ class _AppointmentDetailState extends State<AppointmentDetail>
                     "\n" +
                     "Day/Time: " +
                     ((_appointmentState.date != null) &&
-                        (_appointmentState.duration != null)
+                            (_appointmentState.duration != null)
                         ? DateFormat.jm().format(_appointmentState.date) +
-                        ' - ' +
-                        DateFormat.jm().format(_appointmentState.date.add(
-                            Duration(
-                                minutes: _appointmentState.duration ?? 0))) +
-                        ',  ' +
-                        DateFormat('EE').format(_appointmentState.date) +
-                        '  ' +
-                        DateFormat.MMMd().format(_appointmentState.date) +
-                        ',  ' +
-                        DateFormat.y().format(_appointmentState.date)
+                            ' - ' +
+                            DateFormat.jm().format(_appointmentState.date.add(
+                                Duration(
+                                    minutes:
+                                        _appointmentState.duration ?? 0))) +
+                            ',  ' +
+                            DateFormat('EE').format(_appointmentState.date) +
+                            '  ' +
+                            DateFormat.MMMd().format(_appointmentState.date) +
+                            ',  ' +
+                            DateFormat.y().format(_appointmentState.date)
                         : "Not available") +
                     "\n" +
                     "\n" +
@@ -321,7 +323,7 @@ class _AppointmentDetailState extends State<AppointmentDetail>
           Row(
             mainAxisAlignment: MainAxisAlignment.start,
             children: <Widget>[
-              Text("Appts:",
+              Text("Doctor:",
                   style: TextStyle(
                       fontSize: 20.0,
                       fontFamily: "Arial",
@@ -754,47 +756,47 @@ class _AppointmentDetailState extends State<AppointmentDetail>
                   alignment: WrapAlignment.start,
                   children: <Widget>[
                     Container(
-                        child:
-                            (_appointmentState.status.toString() == "CONFIRMED")
-                                ? Text(
+                        child: (_appointmentState.status.toString() ==
+                                "CONFIRMED")
+                            ? Text(
+                                _appointmentState.status.toString(),
+                                style: TextStyle(
+                                    fontSize: 20.0,
+                                    fontFamily: "Arial",
+                                    color: Colors.black,
+                                    height: 1.5),
+                                textAlign: TextAlign.left,
+                              )
+                            : Row(
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceEvenly,
+                                children: <Widget>[
+                                  Container(
+                                      child: Text(
                                     _appointmentState.status.toString(),
                                     style: TextStyle(
-                                        fontSize: 20.0,
+                                        fontSize: 14.0,
                                         fontFamily: "Arial",
-                                        color: Colors.black,
+                                        color: Colors.red,
                                         height: 1.5),
                                     textAlign: TextAlign.left,
-                                  )
-                                : Row(
-                                    mainAxisAlignment:
-                                        MainAxisAlignment.spaceBetween,
-                                    children: <Widget>[
-                                      Container(
-                                          child: Text(
-                                        _appointmentState.status.toString(),
+                                  )),
+                                  RaisedButton(
+                                      color: Color.fromARGB(255, 135, 193, 218),
+                                      onPressed: _confirm,
+                                      padding: EdgeInsets.symmetric(
+                                          vertical: 10, horizontal: 20),
+                                      child: Text(
+                                        "CONFIRM",
                                         style: TextStyle(
-                                            fontSize: 18.0,
+                                            fontSize: 14.0,
                                             fontFamily: "Arial",
-                                            color: Colors.red,
+                                            color: Colors.white,
                                             height: 1.5),
-                                        textAlign: TextAlign.left,
+                                        textAlign: TextAlign.right,
                                       )),
-                                      RaisedButton(
-                                          color: Color.fromARGB(255, 135, 193, 218),
-                                          onPressed: _confirm,
-                                          padding: EdgeInsets.symmetric(
-                                              vertical: 10, horizontal: 20),
-                                          child: Text(
-                                            "CONFIRM",
-                                            style: TextStyle(
-                                                fontSize: 14.0,
-                                                fontFamily: "Arial",
-                                                color: Colors.white,
-                                                height: 1.5),
-                                            textAlign: TextAlign.right,
-                                          )),
-                                    ],
-                                  ))
+                                ],
+                              ))
                   ],
                 )
               : Wrap(
@@ -816,15 +818,33 @@ class _AppointmentDetailState extends State<AppointmentDetail>
           Column(
             children: <Widget>[
               SizedBox(height: 20),
-              RaisedButton(
-                onPressed: () {
-                  createAlertDialog1(context);
-                },
-                child: Ink.image(
-                  image: AssetImage('assets/images/changeicon.png'),
-                  height: 48,
-                ),
-                color: Color.fromARGB(255, 135, 193, 218),
+              // RaisedButton(
+              //   onPressed: () {
+              //     createAlertDialog1(context);
+              //   },
+              //   child: Ink.image(
+              //     image: AssetImage('assets/images/changeicon.png'),
+              //     height: 48,
+              //   ),
+              //   color: Color.fromARGB(255, 135, 193, 218),
+              // )
+              SizedBox(
+                width: 300,
+                height: 40,
+                child: RaisedButton(
+                    color: Color.fromARGB(255, 135, 193, 218),
+                    onPressed: () {
+                      createAlertDialog1(context);
+                    },
+                    child: Text(
+                      "Change Appointment? ",
+                      style: TextStyle(
+                          fontSize: 16.0,
+                          fontFamily: "Arial",
+                          color: Colors.white,
+                          height: 1.0),
+                      textAlign: TextAlign.center,
+                    )),
               )
             ],
           )

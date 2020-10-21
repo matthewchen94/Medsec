@@ -459,9 +459,6 @@ class _AppointmentsState extends State<Appointments>
       var jsonResponse = null;
       var response = await http.get(url, headers: headers);
       print(response.body);
-      setState(() {
-        _isLoading = false;
-      });
       if (response.statusCode == 200) {
         print("200" + response.body);
         jsonResponse = json.decode(response.body);
@@ -484,6 +481,9 @@ class _AppointmentsState extends State<Appointments>
       } else {
         print(response.body);
       }
+      setState(() {
+        _isLoading = false;
+      });
     }
   }
 
@@ -596,32 +596,12 @@ class _AppointmentsState extends State<Appointments>
         formatButtonVisible: false,
       ),
       builders: CalendarBuilders(
-        selectedDayBuilder: (context, date, _) {
-          return FadeTransition(
-            opacity: Tween(begin: 0.0, end: 1.0).animate(_animationController),
-            child: Container(
-              margin: const EdgeInsets.all(4.0),
-              alignment: Alignment.center,
-              decoration: BoxDecoration(
-                  color: Colors.blue[300],
-                  borderRadius: BorderRadius.circular(36.0),
-                  border: Border.all(width: 2, color: Colors.blue[300])),
-              child: Text(
-                '${date.day}',
-                style: TextStyle().copyWith(
-                    fontSize: 20.0,
-                    color: Colors.black,
-                    fontWeight: FontWeight.bold),
-              ),
-            ),
-          );
-        },
         todayDayBuilder: (context, date, _) {
           return Container(
             margin: const EdgeInsets.all(4.0),
             alignment: Alignment.center,
             decoration: BoxDecoration(
-                color: Colors.red,
+                color: Colors.white,
                 borderRadius: BorderRadius.circular(36.0),
                 border: Border.all(width: 2, color: Colors.white)),
             child: Text(
