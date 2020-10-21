@@ -16,7 +16,7 @@ class AppointmentList extends StatefulWidget {
 }
 
 class _AppointmentListState extends State<AppointmentList> {
-  List<Appointment> _thirtydaysevents = List<Appointment>();
+  List<Appointment> _futureevents = List<Appointment>();
   bool _isLoading = false;
 
   @override
@@ -74,7 +74,7 @@ class _AppointmentListState extends State<AppointmentList> {
                 setState(() {
                   var now = new DateTime.now();
                   if (appointment.date.isAfter(now)) {
-                    _thirtydaysevents.add(appointment);
+                    _futureevents.add(appointment);
                   }
                 });
               }
@@ -113,7 +113,7 @@ class _AppointmentListState extends State<AppointmentList> {
             elevation: 0.5,
           ),
         ),
-        body: (_thirtydaysevents.length == 0)
+        body: (_futureevents.length == 0)
             ? (!_isLoading
                 ? Text("No upcoming appointment record currently!",
                     textAlign: TextAlign.center,
@@ -122,7 +122,7 @@ class _AppointmentListState extends State<AppointmentList> {
                     textAlign: TextAlign.center,
                     style: TextStyle(color: Colors.black, fontSize: 16)))
             : ListView(
-                children: _thirtydaysevents
+                children: _futureevents
                     .map((event) => Container(
                         decoration: BoxDecoration(
                           border: Border.all(width: 0.8),

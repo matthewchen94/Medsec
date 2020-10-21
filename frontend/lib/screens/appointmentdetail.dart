@@ -818,16 +818,6 @@ class _AppointmentDetailState extends State<AppointmentDetail>
           Column(
             children: <Widget>[
               SizedBox(height: 20),
-              // RaisedButton(
-              //   onPressed: () {
-              //     createAlertDialog1(context);
-              //   },
-              //   child: Ink.image(
-              //     image: AssetImage('assets/images/changeicon.png'),
-              //     height: 48,
-              //   ),
-              //   color: Color.fromARGB(255, 135, 193, 218),
-              // )
               SizedBox(
                 width: 300,
                 height: 40,
